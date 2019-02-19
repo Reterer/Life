@@ -14,17 +14,16 @@ class Gui(Frame):
 
     def _initializeUserInterface(self):
         self.gui.title("Main")  # Устанавливаем название окна
-        self.gui.minsize(width=WIDTH, height=HEIGHT)
-        self.gui.resizable(width=0, height=0)
-        self.gui.overrideredirect(False)
-        self.gui.call("wm", "attributes", ".", "-topmost", "1")
+        self.gui.minsize(width=WIDTH, height=HEIGHT)  # Устанавливаем размеры окна
+        self.gui.resizable(width=0, height=0)  # Запрещаем его изменять
+        # self.gui.call("wm", "attributes", ".", "-topmost", "1")
         # tk.Tk.iconbitmap(self, default="")
         self.fps = DoubleVar(value=999)  # Переменная fps
         self.visible_others = DoubleVar(value=False)  # Переменная видимости остальных
         self.env = Environment()  # Инициализируем среду
 
-        self.slider = PanedWindow(self.gui)
-        self.slider.pack(fill=BOTH, expand=True)  # Создаю слайдер
+        self.slider = PanedWindow(self.gui)  # Создаю слайдер
+        self.slider.pack(fill=BOTH, expand=True)
         self.environment_board = Canvas(self.slider, width=WIDTH_MAP, height=HEIGHT_MAP, bg="black")
         self.options_board = LabelFrame(self.slider, text="", width=250, relief=FLAT)
         self.settings_board = LabelFrame(self.options_board, text="Настройки")
@@ -54,7 +53,7 @@ class Gui(Frame):
         self.scores = Treeview(self.statistic_board, columns=_headers, show="headings", selectmode='browse')
         self.scores.place(x=0, y=0)
         vsb = Scrollbar(self.statistic_board, orient="vertical", command=self.scores.yview)
-        vsb.place(x=90, y=0, height=220)
+        vsb.place(x=90, y=0, height=230)
 
         self.scores.configure(yscrollcommand=vsb.set)
         self.scores.grid(row=4, column=0, sticky=W, padx=5, pady=5)
@@ -78,7 +77,6 @@ class Gui(Frame):
 
     def _update(self):
         while True:
-            print(len(self.env.bots))
             self.env.update()
             for bot in self.env.bots:
                 objBot = self.environment_board.create_oval(6, 6, bot.diameter, bot.diameter, fill=bot.color)
