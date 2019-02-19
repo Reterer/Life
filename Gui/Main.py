@@ -5,6 +5,7 @@ from Environment import *
 from tkinter import *
 import time
 
+
 class Gui(Frame):
 
     def __init__(self, parent):
@@ -78,7 +79,8 @@ class Gui(Frame):
     def _update(self):
         i = 0
         while True:
-            if i == 5:
+            print(self.fps.get())
+            if i == self.fps.get():
                 self.env.update()
                 for bot in self.env.bots:
                     objBot = self.environment_board.create_oval(6, 6, bot.diameter, bot.diameter, fill=bot.color)
@@ -86,7 +88,10 @@ class Gui(Frame):
                                                                  text=bot.id)
                     self.environment_board.move(objText, bot.x + bot.diameter / 2 - 6, bot.y - bot.diameter / 2 + 3)
                     self.environment_board.move(objBot, bot.x - bot.diameter / 2, bot.y - bot.diameter)
-                    self.gui.update()
+                for food in self.env.food:
+                    objBot = self.environment_board.create_oval(6, 6, food.diameter, food.diameter, fill=food.color)
+                    self.environment_board.move(objBot, food.x - food.diameter / 2, food.y - food.diameter)
+                self.gui.update()
                 self.environment_board.delete('all')
                 i = 0
                 time.sleep(0.01)

@@ -32,7 +32,7 @@ class Environment:
         if food:
             self.food = food
         else:
-            self.food = [Food(100, 100, 8, "pink", 10)]
+            self.food = [Food(100, 100, 12, "pink", 10)]
 
         for i in range(len(self.bots)):
             self.world[self.bots[i].x][self.bots[i].y] = [-1, i]
