@@ -1,6 +1,6 @@
 class Bot:
-    def __init__(self, id, x, y, energy, vel, gen):
-        self.id = id
+    def __init__(self, _id, x, y, energy, vel, gen):
+        self.id = _id
         self.x = x
         self.y = y
         self.energy = energy
