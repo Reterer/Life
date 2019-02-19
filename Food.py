@@ -5,3 +5,4 @@ class Food:
         self.diameter = diameter
         self.color = color
         self.energy = energy
+        self.is_alive = True

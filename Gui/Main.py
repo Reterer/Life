@@ -79,7 +79,7 @@ class Gui(Frame):
     def _update(self):
         i = 0
         while True:
-            print(self.fps.get())
+            #print(self.fps.get())
             if i == self.fps.get():
                 self.env.update()
                 for bot in self.env.bots:
