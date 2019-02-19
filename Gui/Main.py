@@ -3,7 +3,7 @@ from tkinter import messagebox, filedialog
 from tkinter.ttk import Treeview
 from Environment import *
 from tkinter import *
-
+import time
 
 class Gui(Frame):
 
@@ -76,16 +76,21 @@ class Gui(Frame):
         threading.Thread(target=self._update()).start()
 
     def _update(self):
+        i = 0
         while True:
-            self.env.update()
-            for bot in self.env.bots:
-                objBot = self.environment_board.create_oval(6, 6, bot.diameter, bot.diameter, fill=bot.color)
-                objText = self.environment_board.create_text(0, 0, fill="darkblue", font="Times 8 italic bold",
-                                                             text=bot.id)
-                self.environment_board.move(objText, bot.x + bot.diameter / 2 - 6, bot.y - bot.diameter / 2 + 3)
-                self.environment_board.move(objBot, bot.x - bot.diameter / 2, bot.y - bot.diameter)
-                self.gui.update()
-            self.environment_board.delete('all')
+            if i == 5:
+                self.env.update()
+                for bot in self.env.bots:
+                    objBot = self.environment_board.create_oval(6, 6, bot.diameter, bot.diameter, fill=bot.color)
+                    objText = self.environment_board.create_text(0, 0, fill="darkblue", font="Times 8 italic bold",
+                                                                 text=bot.id)
+                    self.environment_board.move(objText, bot.x + bot.diameter / 2 - 6, bot.y - bot.diameter / 2 + 3)
+                    self.environment_board.move(objBot, bot.x - bot.diameter / 2, bot.y - bot.diameter)
+                    self.gui.update()
+                self.environment_board.delete('all')
+                i = 0
+                time.sleep(0.01)
+            i += 1
 
     def _load(self):
         MsgBox = messagebox.askquestion('Загрузка из дампа.', 'Загрузить из дампа?', icon='warning')
