@@ -16,40 +16,48 @@ class Environment:
         else:
             self._setup()
 
+    def _generate_id(self):
+        i = 1000
+        while True:
+            i += 1
+            yield i
+
     def _setup(self, world=None, bots=None, food=None):
+        self.generator_id_bot = self._generate_id()
+
         if world:
             self.world = world
         else:
-            self.world = [[[0, None] for i in range(HEIGHT_MAP)] for j in
+            self.world = [[[0, None, None] for i in range(HEIGHT_MAP)] for j in
                           range(WIDTH_MAP)]  # Карта мира [x,y], все вещи имеют int координаты
-        # [0,None] - пустота
-        # [1,Food_index] - еда
-        # [2,Bot_index] - Бот
-        # [3,None] - Стена
+        # [0,None,None] - пустота
+        # [1,Food_index,radius] - еда
+        # [2,Bot_index,radius] - Бот
+        # [3,None,None] - Стена
         if bots:
             self.bots = bots
         else:
-            self.bots = [Bot(0, 5, 5, 5000, [0, 0]), Bot(1, 111, 111, 1000, [0, 0])]
+            self.bots = [Bot(0, 5, 5, 5000, [0, 0])]
         if food:
             self.food = food
         else:
-            self.food = [Food(20, 20, 8, [1,0,1], 100)]
+            self.food = [Food(20, 20, 8, [1, 0, 1], 100)]
 
         for i in range(len(self.bots)):
-            self.world[self.bots[i].x][self.bots[i].y] = [2, i]
+            self.world[self.bots[i].x][self.bots[i].y] = [2, i, self.bots[i].radius]
         for i in range(len(self.food)):
-            self.world[self.food[i].x][self.food[i].y] = [1, i]
+            self.world[self.food[i].x][self.food[i].y] = [1, i, self.food[i].radius]
 
     def _generate_new_food(self, id_food):
         x = self.food[id_food].x
         y = self.food[id_food].y
-        self.world[x][y] = [0, None]
+        self.world[x][y] = [0, None, None]
         x = random.randint(0, WIDTH_MAP)
         y = random.randint(0, HEIGHT_MAP)
         while self.world[x][y][0] != 0:
             x = random.randint(0, WIDTH_MAP)
             y = random.randint(0, HEIGHT_MAP)
-        self.world[x][y] = [1, id_food]
+        self.world[x][y] = [1, id_food, self.food[id_food].radius]
         self.food[id_food].x = x
         self.food[id_food].y = y
 
@@ -77,6 +85,7 @@ class Environment:
         bot = Bot(0, x, y, energy, vel)
         bot.color = color
         bot.radius = radius
+        bot.id = self.generator_id_bot.next()
         return bot
 
     def _generate_bots(self, id_bot):
@@ -99,12 +108,11 @@ class Environment:
         return a_bot, b_bot
 
     def _die_bot(self, i):
-        self.world[self.bots[i].x][self.bots[i].y] = [0, None]
+        self.world[self.bots[i].x][self.bots[i].y] = [0, None, None]
         self.bots.pop(i)
 
     def update(self):
         i = 0
-        print(len(self.bots))
         while i < len(self.bots):
             if self.bots[i].energy <= 0:
                 self._die_bot(i)
@@ -145,10 +153,10 @@ class Environment:
                 self.bots[i].vel[0] = new_vel[0]
                 self.bots[i].vel[1] = new_vel[1]
 
-                self.world[self.bots[i].x][self.bots[i].y] = [0, None]
+                self.world[self.bots[i].x][self.bots[i].y] = [0, None, None]
                 self.bots[i].x = int(x)
                 self.bots[i].y = int(y)
-                self.world[self.bots[i].x][self.bots[i].y] = [2, i]
+                self.world[self.bots[i].x][self.bots[i].y] = [2, i, self.bots[i].radius]
 
                 self._collision(i)
                 i += 1
