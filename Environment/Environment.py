@@ -29,7 +29,7 @@ class Environment:
         if bots:
             self.bots = bots
         else:
-            self.bots = [Bot(0, 5, 5, 5000, [0, 0]), Bot(1, 111, 111, 1000, [0, 0])]
+            self.bots = [Bot(0, 5, 5, 5000, [0, 0]), Bot(1, 111, 111, 1000, [0, 0]), Bot(1, 111, 111, 1000, [0, 0])]
         if food:
             self.food = food
         else:
@@ -104,7 +104,6 @@ class Environment:
 
     def update(self):
         i = 0
-        print(len(self.bots))
         while i < len(self.bots):
             if self.bots[i].energy <= 0:
                 self._die_bot(i)

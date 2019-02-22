@@ -10,7 +10,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtOpenGL import QGL, QGLFormat, QGLWidget
 from OpenGL import GL, GLU
-from PyQt5.QtWidgets import QTreeView
+from PyQt5.QtWidgets import QTreeView, QTreeWidget
 
 import Config
 
@@ -97,7 +97,11 @@ class Ui_MainWindow(object):
         self.line.setObjectName("line")
         self.formLayout.setWidget(5, QtWidgets.QFormLayout.SpanningRole, self.line)
 
-        self.scores = QTreeView(self.groupBox)
+        self.pushButton = QtWidgets.QPushButton(self.groupBox)
+        self.pushButton.setObjectName("pushButton")
+
+        self.scores = QTreeWidget(self.groupBox)
+        self.scores.setHeaderLabels(['#', 'Счёт'])
         self.scores.setMinimumSize(QtCore.QSize(0, 250))
         self.scores.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.scores.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
@@ -153,3 +157,4 @@ class Ui_MainWindow(object):
         self.action_2.setText(_translate("MainWindow", "Открыть"))
         self.action_3.setText(_translate("MainWindow", "Настройка среды"))
         self.action_5.setText(_translate("MainWindow", "Выйти"))
+        self.pushButton.setText(_translate("MainWindow", "Обновить"))
