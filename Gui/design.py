@@ -7,8 +7,11 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtOpenGL import QGL, QGLFormat, QGLWidget
 from OpenGL import GL, GLU
+from PyQt5.QtWidgets import QTreeView
+
 import Config
 
 
@@ -94,7 +97,7 @@ class Ui_MainWindow(object):
         self.line.setObjectName("line")
         self.formLayout.setWidget(5, QtWidgets.QFormLayout.SpanningRole, self.line)
 
-        self.scores = QtWidgets.QTreeView(self.groupBox)
+        self.scores = QTreeView(self.groupBox)
         self.scores.setMinimumSize(QtCore.QSize(0, 250))
         self.scores.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.scores.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
@@ -106,12 +109,9 @@ class Ui_MainWindow(object):
         self.scores.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.scores.setWordWrap(False)
         self.scores.setObjectName("scores")
-        self.model = QtGui.QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(['#', 'Статистика'])
-        self.scores.header().setDefaultSectionSize(20)
-        self.scores.setModel(self.model)
+        self.scores.setColumnWidth(0, 150)
 
-        self.formLayout.setWidget(6, QtWidgets.QFormLayout.LabelRole, self.scores)
+        self.formLayout.setWidget(6, QtWidgets.QFormLayout.SpanningRole, self.scores)
         self.line_2 = QtWidgets.QFrame(self.groupBox)
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)

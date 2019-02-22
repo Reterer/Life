@@ -1,8 +1,9 @@
 from OpenGL import GL
 from OpenGL.raw.GL.VERSION.GL_1_0 import glVertex2f
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QTableWidgetItem
 from OpenGL.GLUT import *
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
+
 from Gui import design
 import math
 from Environment.Environment import *
@@ -14,14 +15,16 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.environment = Environment()
         self.environment.setup()
         self.setupUi(self)
-        self.openGLWidget.bots = self.environment.bots
-
-        #self.scores.setRowCount(len(self.environment.bots))
-        #self.scores.setHorizontalHeaderLabels(["#", "Счёт"])
-        #for i in range(len(self.environment.bots)):
-        #    self.scores.setItem(i, 0, QTableWidgetItem(str(self.environment.bots[i].id)))
-        #    self.scores.setItem(i, 1, QTableWidgetItem(str(self.environment.bots[i].energy)))
         self.openGLWidget.paintGL = self.paintGL
+        self.model = QStandardItemModel()
+        self.rootNode = self.model.invisibleRootItem()
+        for i in range(len(self.environment.bots)):
+            branch1 = QStandardItem(str(self.environment.bots[i].id))
+            branch1.appendRow([QStandardItem("2"), QStandardItem("5")])
+            branch1.appendRow([QStandardItem("3"), QStandardItem("6")])
+            self.rootNode.appendRow([branch1, None])
+        self.scores.setModel(self.model)
+        self.scores.setAlternatingRowColors(True)
 
     def paintGL(self):
 
@@ -42,8 +45,14 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
                 glVertex2f(self.environment.bots[i].radius * math.cos(angle * 3.142 / 180) + self.environment.bots[i].x,
                            self.environment.bots[i].radius * math.sin(angle * 3.142 / 180) + self.environment.bots[i].y)
             GL.glEnd()
-            #self.scores.setItem(i, 1, QTableWidgetItem(str(self.environment.bots[i].energy)))
 
+        for i in range(len(self.environment.food)):
+            GL.glColor3f(self.environment.food[i].color[0], self.environment.food[i].color[1], self.environment.food[i].color[2])
+            GL.glBegin(GL.GL_POLYGON)
+            for angle in range(0, 360, 30):
+                glVertex2f(self.environment.food[i].radius * math.cos(angle * 3.142 / 180) + self.environment.food[i].x,
+                           self.environment.food[i].radius * math.sin(angle * 3.142 / 180) + self.environment.food[i].y)
+            GL.glEnd()
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
