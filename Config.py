@@ -7,4 +7,4 @@ WIDTH = 1285
 DELTA_TIME = 0.5
 ENABLE_GUI = True
 
-F_tr = 0.5
+F_tr = 0.1
