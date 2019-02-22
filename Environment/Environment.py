@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 from Config import *
 from Environment.Bot import Bot
@@ -16,14 +17,8 @@ class Environment:
         else:
             self._setup()
 
-    def _generate_id(self):
-        i = 1000
-        while True:
-            i += 1
-            yield i
-
     def _setup(self, world=None, bots=None, food=None):
-        self.generator_id_bot = self._generate_id()
+        self.generator_id_bot = 2
 
         if world:
             self.world = world
@@ -37,11 +32,25 @@ class Environment:
         if bots:
             self.bots = bots
         else:
-            self.bots = [Bot(0, 5, 5, 5000, [0, 0])]
+            def generate_bot(i):
+                for i in range(i):
+                    x, y = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                    while self.world[x][y][0] != 0:
+                        x, y = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                    self.world[x][y] = [1, i, 8]
+                    yield Bot(x, y, 5, 3000, [0, 0])
+            self.bots = [bot for bot in generate_bot(10)]
         if food:
             self.food = food
         else:
-            self.food = [Food(20, 20, 8, [1, 0, 1], 100)]
+            def generate_food(i):
+                for i in range(i):
+                    x, y = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                    while self.world[x][y][0] != 0:
+                        x, y = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                    self.world[x][y] = [1, i, 8]
+                    yield Food(x, y, 8, [1, 0, 1], 100)
+            self.food = [food for food in generate_food(10)]
 
         for i in range(len(self.bots)):
             self.world[self.bots[i].x][self.bots[i].y] = [2, i, self.bots[i].radius]
@@ -81,12 +90,29 @@ class Environment:
         color = in_bot.color
         radius = in_bot.radius
 
-
         bot = Bot(0, x, y, energy, vel)
         bot.color = color
         bot.radius = radius
-        bot.id = self.generator_id_bot.next()
+        bot.id = self.generator_id_bot
+        self.generator_id_bot += 1
+
+        bot.W_1 = np.copy(in_bot.W_1)
+        bot.W_2 = np.copy(in_bot.W_2)
+        bot.b_1 = np.copy(in_bot.b_1)
+        bot.b_2 = np.copy(in_bot.b_2)
+
         return bot
+
+    def _mutation(self, bot):
+        rnd = random.randint(0, 3)
+        if rnd == 0:
+            bot.W_1 += (np.random.random((bot.eyes_count + 1, bot.l1)) - 0.5)*0.1
+        elif rnd == 1:
+            bot.W_2 += (np.random.random((bot.l1, bot.l2)) - 0.5) * 0.1
+        elif rnd == 2:
+            bot.b_1 += (np.random.random(bot.l1) - 0.5) * 0.1
+        else:
+            bot.b_2 += (np.random.random(bot.l2) - 0.5) * 0.1
 
     def _generate_bots(self, id_bot):
         a_bot = self.new_bot(self.bots[id_bot])
@@ -98,13 +124,26 @@ class Environment:
 
         a_bot.energy /= 2
         a_bot.energy *= 0.8
+        if a_bot.energy < 10:
+            a_bot.energy = 0
+
         b_bot.energy /= 2
         b_bot.energy *= 0.8
+        if b_bot.energy < 10:
+            b_bot.energy = 0
 
         a_bot.vel[0] *= 2
         a_bot.vel[1] *= 2
         b_bot.vel[0] *= -1
         b_bot.vel[1] *= -1
+
+        #rnd = random.randint(0, 99)
+        #if rnd < 5:
+        #    if random.randint(0, 1) == 0:
+        #        self._mutation(a_bot)
+        #    else:
+        #        self._mutation(b_bot)
+
         return a_bot, b_bot
 
     def _die_bot(self, i):
@@ -114,6 +153,7 @@ class Environment:
     def update(self):
         i = 0
         while i < len(self.bots):
+            #print(len(self.bots), i, self.bots[i].energy)
             if self.bots[i].energy <= 0:
                 self._die_bot(i)
                 continue
@@ -159,4 +199,4 @@ class Environment:
                 self.world[self.bots[i].x][self.bots[i].y] = [2, i, self.bots[i].radius]
 
                 self._collision(i)
-                i += 1
+            i += 1

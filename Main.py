@@ -23,7 +23,7 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
             branch1.appendRow([QStandardItem("2"), QStandardItem("5")])
             branch1.appendRow([QStandardItem("3"), QStandardItem("6")])
             self.rootNode.appendRow([branch1, None])
-        self.scores.setModel(self.model)
+        # self.scores.setModel(self.model)
         self.scores.setAlternatingRowColors(True)
 
     def paintGL(self):

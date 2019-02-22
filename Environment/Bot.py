@@ -34,8 +34,7 @@ class Bot:
         y1 = np.matmul(data, self.W_1) + self.b_1
         y2 = (af.sigmoid(np.matmul(y1, self.W_2) + self.b_2) - 0.5)*2
         res = list(y2)
-        res[2] = int((res[2] + 1)/2 + 0.3)
-        print(res)
+        res[2] = int((res[2] + 1)/2 + 0.1)
         return res
 
     def turn(self, world):
