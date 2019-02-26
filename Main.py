@@ -30,7 +30,7 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def __update(self):
         i = 0
         while True:
-            if i == 10:
+            if i == 5:
                 self.openGLWidget.update()
                 i = 0
                 time.sleep(0.001)
