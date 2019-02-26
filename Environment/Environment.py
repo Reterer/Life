@@ -44,7 +44,7 @@ class Environment:
                     self.world[x][y] = [0, i, 8]
                     yield Bot(i, x, y, 3000, [0, 0])
 
-            self.bots = [bot for bot in generate_bot(100)]
+            self.bots = [bot for bot in generate_bot(20)]
         if food:
             self.food = food
         else:
@@ -53,10 +53,10 @@ class Environment:
                     x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     while self.world[x][y][0] != 0:
                         x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
-                    self.world[x][y] = [1, i, 8]
-                    yield Food(x, y, 8, [1, 0, 1], 100)
+                    self.world[x][y] = [1, i, 3]
+                    yield Food(x, y, 3, [1, 0, 1], 100)
 
-            self.food = [food for food in generate_food(5)]
+            self.food = [food for food in generate_food(50)]
 
         for i in range(len(self.bots)):
             self.world[self.bots[i].x][self.bots[i].y] = [2, i, self.bots[i].radius]
@@ -86,7 +86,7 @@ class Environment:
             for y in range(max(y_bot - r_bot, 0), min(y_bot + r_bot, HEIGHT_MAP)):
                 if self.world[x][y][0] == 1:
                     sq_dist = (x - self.food[self.world[x][y][1]].x) ** 2 + (y - self.food[self.world[x][y][1]].y) ** 2
-                    if sq_dist <= (r_bot + self.food[self.world[x][y][1]].radius) ** 2:
+                    if sq_dist <= 2*(r_bot + self.food[self.world[x][y][1]].radius) ** 2:
                         self.bots[i_bot].energy += self.food[self.world[x][y][1]].energy
                         self.bots[i_bot].eat_food += 1
                         self._generate_new_food(self.world[x][y][1])
@@ -115,13 +115,13 @@ class Environment:
     def _mutation(self, bot):
         rnd = random.randint(0, 3)
         if rnd == 0:
-            bot.W_1 += (np.random.random((bot.eyes_count + 1, bot.l1)) - 0.5) * 0.1
+            bot.W_1 += (np.random.random((bot.eyes_count + 1, bot.l1)) - 0.5) * 0.2
         elif rnd == 1:
-            bot.W_2 += (np.random.random((bot.l1, bot.l2)) - 0.5) * 0.1
+            bot.W_2 += (np.random.random((bot.l1, bot.l2)) - 0.5) * 0.2
         elif rnd == 2:
-            bot.b_1 += (np.random.random(bot.l1) - 0.5) * 0.1
+            bot.b_1 += (np.random.random(bot.l1) - 0.5) * 0.2
         else:
-            bot.b_2 += (np.random.random(bot.l2) - 0.5) * 0.1
+            bot.b_2 += (np.random.random(bot.l2) - 0.5) * 0.2
 
     def _generate_bots(self, id_bot):
         a_bot = self.new_bot(self.bots[id_bot])
@@ -160,11 +160,61 @@ class Environment:
         self.bots.pop(i)
 
     def update(self):
-        #  self.crt_iter += 1
+        self.crt_iter += 1
+        print(self.crt_iter, self.epoch)
         #  Переход на новую эпоху
         if self.crt_iter == self.iter_for_epoch:
+            self.epoch += 1
+            self.crt_iter = 0
             new_bots = sorted(self.bots, key=lambda bot: bot.eat_food, reverse=True)
 
+            for bot in new_bots:
+                self.world[bot.x][bot.y] = [0, None, None]
+
+            new_bots = new_bots[:min(20, len(new_bots))]
+            if len(new_bots) < 10:
+                new_bots += new_bots
+            len_bots = len(new_bots)
+            if len_bots > 0:
+                #  Получение новых ботов
+                a = new_bots[:int(len_bots*0.4)]
+                random.shuffle(new_bots)
+                b_1 = new_bots[:int(len_bots*0.3)]
+                random.shuffle(new_bots)
+                b_2 = new_bots[:int(len_bots * 0.3)]
+                random.shuffle(new_bots)
+                c = new_bots[:int(len_bots*0.3)]
+
+                #  Скрещивание ботов
+                b = []
+                for pair in zip(b_1, b_2):
+                    W_1 = np.copy(pair[random.randint(0, 1)].W_1)
+                    W_2 = np.copy(pair[random.randint(0, 1)].W_2)
+                    B_1 = np.copy(pair[random.randint(0, 1)].b_1)
+                    B_2 = np.copy(pair[random.randint(0, 1)].b_2)
+                    b.append(Bot(pair[0].id, pair[0].x, pair[0].y, 3000, [0, 0]))
+                    b[-1].W_1 = W_1
+                    b[-1].W_2 = W_2
+                    b[-1].b_1 = B_1
+                    b[-1].b_2 = B_2
+
+                for i in range(len(c)):
+                    self._mutation(c[i])
+                new_bots = a + b + c
+
+                for i in range(len(new_bots)):
+                    x_bot, y_bot = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                    while self.world[x_bot][y_bot][0] != 0:
+                        x_bot, y_bot = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                    new_bots[i].x = x_bot
+                    new_bots[i].y = y_bot
+                    self.world[x_bot][y_bot] = [2, bot.id, bot.radius]
+                    new_bots[i] = self.new_bot(new_bots[i])
+
+                random.shuffle(new_bots)
+                self.bots = new_bots
+            else:
+                pass
 
         i = 0
         while i < len(self.bots):
