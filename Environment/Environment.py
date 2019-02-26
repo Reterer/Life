@@ -17,7 +17,11 @@ class Environment:
         else:
             self._setup()
 
-    def _setup(self, world=None, bots=None, food=None):
+    def _setup(self, world=None, bots=None, food=None, epoch=0, iter_for_epoch=100, crt_iter=0):
+        self.epoch = epoch
+        self.iter_for_epoch = iter_for_epoch
+        self.crt_iter = crt_iter
+
         self.generator_id_bot = 2
 
         if world:
@@ -37,10 +41,10 @@ class Environment:
                     x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     while self.world[x][y][0] != 0:
                         x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
-                    self.world[x][y] = [1, i, 8]
-                    yield Bot(x, y, 5, 3000, [0, 0])
+                    self.world[x][y] = [0, i, 8]
+                    yield Bot(i, x, y, 3000, [0, 0])
 
-            self.bots = [bot for bot in generate_bot(2)]
+            self.bots = [bot for bot in generate_bot(100)]
         if food:
             self.food = food
         else:
@@ -59,6 +63,7 @@ class Environment:
         for i in range(len(self.food)):
             self.world[self.food[i].x][self.food[i].y] = [1, i, self.food[i].radius]
 
+    #  Вызывается, когда бот ест еду
     def _generate_new_food(self, id_food):
         x = self.food[id_food].x
         y = self.food[id_food].y
@@ -72,6 +77,8 @@ class Environment:
         self.food[id_food].x = x
         self.food[id_food].y = y
 
+
+    #  Взаимодействие ботов с окружающей средой
     def _collision(self, i_bot):
         x_bot, y_bot = self.bots[i_bot].x, self.bots[i_bot].y
         r_bot = self.bots[i_bot].radius
@@ -153,8 +160,13 @@ class Environment:
         self.bots.pop(i)
 
     def update(self):
+        #  self.crt_iter += 1
+        #  Переход на новую эпоху
+        if self.crt_iter == self.iter_for_epoch:
+            new_bots = sorted(self.bots, key=lambda bot: bot.eat_food, reverse=True)
+
+
         i = 0
-        print(len(self.bots))
         while i < len(self.bots):
             # print(len(self.bots), i, self.bots[i].energy)
             if self.bots[i].energy <= 0:
