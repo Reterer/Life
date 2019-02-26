@@ -34,23 +34,25 @@ class Environment:
         else:
             def generate_bot(i):
                 for i in range(i):
-                    x, y = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                    x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     while self.world[x][y][0] != 0:
-                        x, y = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                        x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     self.world[x][y] = [1, i, 8]
                     yield Bot(x, y, 5, 3000, [0, 0])
-            self.bots = [bot for bot in generate_bot(10)]
+
+            self.bots = [bot for bot in generate_bot(2)]
         if food:
             self.food = food
         else:
             def generate_food(i):
                 for i in range(i):
-                    x, y = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                    x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     while self.world[x][y][0] != 0:
-                        x, y = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                        x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     self.world[x][y] = [1, i, 8]
                     yield Food(x, y, 8, [1, 0, 1], 100)
-            self.food = [food for food in generate_food(10)]
+
+            self.food = [food for food in generate_food(5)]
 
         for i in range(len(self.bots)):
             self.world[self.bots[i].x][self.bots[i].y] = [2, i, self.bots[i].radius]
@@ -73,11 +75,11 @@ class Environment:
     def _collision(self, i_bot):
         x_bot, y_bot = self.bots[i_bot].x, self.bots[i_bot].y
         r_bot = self.bots[i_bot].radius
-        for x in range(max(x_bot-r_bot, 0), min(x_bot+r_bot, WIDTH_MAP)):
-            for y in range(max(y_bot-r_bot, 0), min(y_bot+r_bot, HEIGHT_MAP)):
+        for x in range(max(x_bot - r_bot, 0), min(x_bot + r_bot, WIDTH_MAP)):
+            for y in range(max(y_bot - r_bot, 0), min(y_bot + r_bot, HEIGHT_MAP)):
                 if self.world[x][y][0] == 1:
-                    sq_dist = (x-self.food[self.world[x][y][1]].x)**2 + (y - self.food[self.world[x][y][1]].y)**2
-                    if sq_dist <= (r_bot+self.food[self.world[x][y][1]].radius)**2:
+                    sq_dist = (x - self.food[self.world[x][y][1]].x) ** 2 + (y - self.food[self.world[x][y][1]].y) ** 2
+                    if sq_dist <= (r_bot + self.food[self.world[x][y][1]].radius) ** 2:
                         self.bots[i_bot].energy += self.food[self.world[x][y][1]].energy
                         self.bots[i_bot].eat_food += 1
                         self._generate_new_food(self.world[x][y][1])
@@ -106,7 +108,7 @@ class Environment:
     def _mutation(self, bot):
         rnd = random.randint(0, 3)
         if rnd == 0:
-            bot.W_1 += (np.random.random((bot.eyes_count + 1, bot.l1)) - 0.5)*0.1
+            bot.W_1 += (np.random.random((bot.eyes_count + 1, bot.l1)) - 0.5) * 0.1
         elif rnd == 1:
             bot.W_2 += (np.random.random((bot.l1, bot.l2)) - 0.5) * 0.1
         elif rnd == 2:
@@ -137,8 +139,8 @@ class Environment:
         b_bot.vel[0] *= -1
         b_bot.vel[1] *= -1
 
-        #rnd = random.randint(0, 99)
-        #if rnd < 5:
+        # rnd = random.randint(0, 99)
+        # if rnd < 5:
         #    if random.randint(0, 1) == 0:
         #        self._mutation(a_bot)
         #    else:
@@ -152,8 +154,9 @@ class Environment:
 
     def update(self):
         i = 0
+        print(len(self.bots))
         while i < len(self.bots):
-            #print(len(self.bots), i, self.bots[i].energy)
+            # print(len(self.bots), i, self.bots[i].energy)
             if self.bots[i].energy <= 0:
                 self._die_bot(i)
                 continue

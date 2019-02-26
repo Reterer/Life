@@ -3,7 +3,9 @@ import numpy as np
 import math
 import Environment.ActivationFunc as af
 
+
 class Bot:
+
     def __init__(self, _id, x, y, energy, vel):
         self.id = _id
         self.x = x
@@ -11,7 +13,7 @@ class Bot:
         self.energy = energy
         self.vel = vel
         self.color = [1, 1, 0]
-        self.radius = 8
+        self.radius = 3
         self.eat_food = 0
 
         # Гены

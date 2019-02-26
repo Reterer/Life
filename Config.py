@@ -5,6 +5,7 @@ HEIGHT = 500
 WIDTH = 1285
 
 DELTA_TIME = 0.5
-ENABLE_GUI = True
+ENABLE_GUI = False
+DRAW = True
 
 F_tr = 0.2
