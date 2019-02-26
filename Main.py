@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import threading
 from OpenGL import GL
 from OpenGL.raw.GL.VERSION.GL_1_0 import glVertex2f
 from PyQt5 import QtWidgets
@@ -9,35 +10,34 @@ from PyQt5.QtWidgets import QTableWidgetItem
 from Gui import design
 import math
 from Environment.Environment import *
+import time
+
+
 
 
 class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def __init__(self):
         super().__init__()
-        self.environment = Environment()                                            # Инициализирую среду
-        self.environment.setup()                                                    # Произвожу первоначальную настройку
-        self.setupUi(self)                                                          # Инициализирую gui
-        self.openGLWidget.paintGL = self.paintGL                                    # Фунция отрисовки
+        self.environment = Environment()  # Инициализирую среду
+        self.environment.setup()  # Произвожу первоначальную настройку
+        self.setupUi(self)  # Инициализирую gui
+        self.openGLWidget.paintGL = self.paintGL  # Фунция отрисовки
 
-        timer = QTimer(self)                                                        # Инициализирую таймер
-        timer.timeout.connect(self.__update)
-        timer.start(1)                                                              # Запускаю таймер
+        t1 = threading.Thread(target=self.__update)
+        t1.start()
 
-    def __update(self):                                                             # Функция обновления
-        self.environment.update()                                                   # Обновление среды
-        if self.checkBox.isChecked():
-            self.openGLWidget.update()                                              # Обновление кадра
-        if self.checkBox_2.isChecked():                                             # Обновляю статистику
-            self.tbScores.setRowCount(len(self.environment.bots))
-            for i in range(len(self.environment.bots)):
-                self.tbScores.setItem(i, 0, QTableWidgetItem(str(i)))
-                self.tbScores.setItem(i, 1, QTableWidgetItem(str(self.environment.bots[i].energy)))
-            self.tbScores.setColumnWidth(0, 20)
-            self.label_3.setText(str(len(self.environment.bots)))
-            self.label_5.setText(str(len(self.environment.food)))
+    def __update(self):
+        i = 0
+        while True:
+            if i == 10:
+                self.openGLWidget.update()
+                i = 0
+                time.sleep(0.001)
+            self.environment.update()
+            i += 1
 
-    def paintGL(self):                                                              # Функция отрисовки
+    def paintGL(self):  # Функция отрисовки
         # Очищаю экран #
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         GL.glMatrixMode(GL.GL_MODELVIEW)
@@ -77,6 +77,7 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     window = Apps()
     window.show()
+
     app.exec_()
 
 
