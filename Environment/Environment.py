@@ -161,14 +161,15 @@ class Environment:
 
     def update(self):
         self.crt_iter += 1
-        # print(self.crt_iter, self.epoch)
+        if self.crt_iter % 10 == 0:
+            print(self.crt_iter, self.epoch)
         #  Переход на новую эпоху
         if self.crt_iter == self.iter_for_epoch:
             print(self.crt_iter, self.epoch)
             self.epoch += 1
             self.crt_iter = 0
             new_bots = sorted(self.bots, key=lambda bot: bot.eat_food, reverse=True)
-            print(*new_bots)
+            print(*new_bots, sep = " | \n")
             for bot in new_bots:
                 self.world[bot.x][bot.y] = [0, None, None]
 

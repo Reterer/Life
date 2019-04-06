@@ -31,7 +31,7 @@ class Bot:
         self.b_2 = (np.random.random(self.l2) - 0.5) * 2
 
     def __str__(self):
-        return "{} {}".format(self.energy, self.eat_food)
+        return "bot id: {} | energy: {:.3f} | eat: {}".format(self.id, self.energy, self.eat_food)
 
     def _predict(self, data):
         y1 = af.relu(np.matmul(data, self.W_1) + self.b_1)
