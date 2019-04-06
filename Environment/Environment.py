@@ -59,7 +59,7 @@ class Environment:
                     while self.world[x][y][0] != 0:
                         x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     self.world[x][y] = [1, i, 3]
-                    yield Food(x, y, 5, [1, 0, 1], 100)
+                    yield Food(x, y, 5, [0, 0, 1], 100)
 
             self.food = [food for food in generate_food(50)]
 
@@ -257,7 +257,7 @@ class Environment:
                 self._die_bot(i)
                 continue
 
-            dx, dy, duplicate = self.bots[i].turn(self.world)
+            dx, dy, duplicate = self.bots[i].turn(self.world,self.food,self.bots)
             if duplicate == 1:
                 bot_a, bot_b = self._generate_bots(i)
                 self.bots[i] = bot_a
