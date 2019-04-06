@@ -6,17 +6,7 @@ from PyQt5 import QtWidgets
 from OpenGL.GLUT import *
 from Gui import design
 from Environment.Environment import *
-
-
-def bordered(title, body):
-    lines = body.splitlines()
-    width = max(len(s) for s in lines)
-    res = ['╒═' + title + '═' * (width - len(title) - 1) + '╕']
-    for s in lines:
-        res.append('│' + (s + ' ' * width)[:width] + '│')
-    res.append('╘' + '═' * width + '╛')
-    return '\n'.join(res)
-
+import Utils as utils
 
 class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
@@ -36,7 +26,7 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 
 def main():
-    print(bordered("Information", " Run the program with arguments: {0}".format(sys.argv)))
+    print(utils.bordered("Information", " Run the program with arguments: {0}".format(sys.argv)))
     if len(sys.argv) > 1:
         if sys.argv[1] == "-train":
             environment = Environment()
