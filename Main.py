@@ -12,21 +12,17 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def __init__(self):
         super().__init__()
-        self.environment = Environment()  # Инициализирую среду
-        self.environment.setup()  # Произвожу первоначальную настройку
-        self.setupUi(self)  # Инициализирую gui
+        self.environment = Environment()                                            # Инициализирую среду
+        self.environment.setup()                                                    # Произвожу первоначальную настройку
+        self.setupUi(self)                                                          # Инициализирую gui
         t1 = threading.Thread(target=self.__update)
         t1.start()
 
     def __update(self):
         i = 0
         while True:
-
-            if i == 1:
-                self.openGLWidget._upgrade(self.environment.bots, self.environment.food)
-                i = 0
+            self.openGLWidget._upgrade(self.environment.bots, self.environment.food)
             self.environment.update()
-            i += 1
 
 
 def main():
