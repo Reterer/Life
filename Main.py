@@ -8,6 +8,7 @@ from Gui import design
 from Environment.Environment import *
 import Utils as utils
 
+
 class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def __init__(self):
@@ -19,7 +20,6 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
         t1.start()
 
     def __update(self):
-        i = 0
         while True:
             self.openGLWidget._upgrade(self.environment.bots, self.environment.food)
             self.environment.update()
