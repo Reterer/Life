@@ -1,26 +1,25 @@
 # -*- coding: utf-8 -*-
 
 import threading
-
 from PyQt5 import QtWidgets
 from OpenGL.GLUT import *
 from Gui import design
 from Environment.Environment import *
 import Utils as utils
+import qdarkgraystyle
 
 
 class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
-    def __init__(self):
+    def __init__(self, path):
         super().__init__()
         self.environment = Environment()  # Инициализирую среду
-        path = "null"
-        for i in range(len(sys.argv)):
-            if i == "-o":
-                if i + 1 < len(sys.argv):
-                    path = sys.argv[i + 1]
         if path != "null":
-            self.environment = pickle.load(path)
+            f = open(path, 'rb')
+            environment = pickle.load(f)
+            print(utils.bordered("Information",
+                                 " Bots: {0}, Epoch: {1}".format(len(environment.bots), environment.epoch)))
+            f.close()
         else:
             self.environment.setup()  # Произвожу первоначальную настройку
 
@@ -38,8 +37,8 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 
 def main():
-
-    if len(sys.argv) > 1:
+    print(len(sys.argv))
+    if len(sys.argv) > 0:
         path = "null"
         mode = "test"
         for i in range(len(sys.argv)):
@@ -55,6 +54,7 @@ def main():
             if path != "null":
                 f = open(path, 'rb')
                 environment = pickle.load(f)
+                print(utils.bordered("Information", " Bots: {0}, Epoch: {1}".format(len(environment.bots), environment.epoch)))
                 f.close()
             else:
                 environment.setup()
@@ -62,10 +62,10 @@ def main():
                 environment.update()
         else:
             app = QtWidgets.QApplication(sys.argv)
-            window = Apps()
+            app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+            window = Apps(path)
             window.show()
             app.exec_()
-
 
 
 if __name__ == '__main__':

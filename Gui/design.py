@@ -2,8 +2,8 @@
 
 from PyQt5 import QtCore, QtWidgets
 from OpenGL import GL, GLU
-from PyQt5.QtCore import QPointF, Qt, QPoint
-from PyQt5.QtGui import (QBrush, QColor, QFont, QLinearGradient, QPainter, QPen)
+from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtGui import (QBrush, QColor, QFont, QPainter, QPen)
 from PyQt5.QtWidgets import QOpenGLWidget
 import Config as Config
 
@@ -23,7 +23,7 @@ class Helper(object):
 
     def paint(self, painter, event, *args):
         painter.fillRect(event.rect(), self.background)
-        painter.translate(10, 10)
+        painter.translate(5, 5)
 
         painter.save()
 
@@ -34,7 +34,7 @@ class Helper(object):
                 painter.drawEllipse(args[0][i].x, args[0][i].y-args[0][i].radius/2, args[0][i].radius, args[0][i].radius)
                 painter.setPen(self.textPen)
                 painter.setFont(self.textFont)
-                painter.drawText(QPoint(args[0][i].x-args[0][i].radius/2, args[0][i].y-args[0][i].radius/2), str(args[0][i].id)+" | "+str(round(args[0][i].energy)))
+                painter.drawText(QPoint(args[0][i].x-args[0][i].radius/2, args[0][i].y-args[0][i].radius/2), str(args[0][i].id)+" | "+str(round(--args[0][i].energy)))
 
         for i in range(len(args[1])):
             if i <= len(args[1]):
