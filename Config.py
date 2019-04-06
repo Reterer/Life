@@ -8,4 +8,6 @@ DELTA_TIME = 0.5
 ENABLE_GUI = False
 DRAW = True
 
+
+
 F_tr = 0.2

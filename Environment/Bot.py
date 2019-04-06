@@ -16,7 +16,7 @@ class Bot:
         self.eat_food = 0
 
         # Гены
-        self.eyes_count = 4  # Кол-во глаз
+        self.eyes_count = 10  # Кол-во глаз
         self.raycast_d = 6  # Шаг рэйкаста - чем меньше, тем более точно, но более медленно
         self.raycast_distans = 60  # Как далеко идет луч
 
@@ -24,11 +24,11 @@ class Bot:
         self.l1 = 6  # Кол-во выходных нейронов первого слоя
         self.l2 = 3  # Кол-во выходных нейронов второго слоя
 
-        self.W_1 = (np.random.random((self.eyes_count + 1, self.l1)) - 0.5) * 2
-        self.b_1 = (np.random.random(self.l1) - 0.5) * 2
+        self.W_1 = (np.random.random((self.eyes_count + 1, self.l1)) - 0.5) * 0.2
+        self.b_1 = (np.random.random(self.l1) - 0.5) * 0.2
 
-        self.W_2 = (np.random.random((self.l1, self.l2)) - 0.5) * 2
-        self.b_2 = (np.random.random(self.l2) - 0.5) * 2
+        self.W_2 = (np.random.random((self.l1, self.l2)) - 0.5) * 0.2
+        self.b_2 = (np.random.random(self.l2) - 0.5) * 0.2
 
     def __str__(self):
         return "bot id: {} | energy: {:.3f} | eat: {}".format(self.id, self.energy, self.eat_food)

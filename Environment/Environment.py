@@ -117,13 +117,13 @@ class Environment:
     def _mutation(self, bot):
         rnd = random.randint(0, 3)
         if rnd == 0:
-            bot.W_1 += (np.random.random((bot.eyes_count + 1, bot.l1)) - 0.5) * 0.2
+            bot.W_1 += (np.random.random((bot.eyes_count + 1, bot.l1)) - 0.5) * 0.3
         elif rnd == 1:
-            bot.W_2 += (np.random.random((bot.l1, bot.l2)) - 0.5) * 0.2
+            bot.W_2 += (np.random.random((bot.l1, bot.l2)) - 0.5) * 0.3
         elif rnd == 2:
-            bot.b_1 += (np.random.random(bot.l1) - 0.5) * 0.2
+            bot.b_1 += (np.random.random(bot.l1) - 0.5) * 0.3
         else:
-            bot.b_2 += (np.random.random(bot.l2) - 0.5) * 0.2
+            bot.b_2 += (np.random.random(bot.l2) - 0.5) * 0.3
 
     def _generate_bots(self, id_bot):
         a_bot = self.new_bot(self.bots[id_bot])
@@ -148,12 +148,12 @@ class Environment:
         b_bot.vel[0] *= -1
         b_bot.vel[1] *= -1
 
-        # rnd = random.randint(0, 99)
-        # if rnd < 5:
-        #    if random.randint(0, 1) == 0:
-        #        self._mutation(a_bot)
-        #    else:
-        #        self._mutation(b_bot)
+        rnd = random.randint(0, 99)
+        if rnd < 30:
+           if random.randint(0, 1) == 0:
+               self._mutation(a_bot)
+           else:
+               self._mutation(b_bot)
 
         return a_bot, b_bot
 
