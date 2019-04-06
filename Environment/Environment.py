@@ -2,10 +2,10 @@ import random
 import pickle
 import datetime
 import numpy as np
-
 from Config import *
 from Environment.Bot import Bot
 from Environment.Food import Food
+from prettytable import PrettyTable
 
 
 class Environment:
@@ -175,8 +175,14 @@ class Environment:
             print(self.crt_iter, self.epoch)
             self.epoch += 1
             self.crt_iter = 0
+
+            t = PrettyTable(['#', 'Score'])
             new_bots = sorted(self.bots, key=lambda bot: bot.eat_food, reverse=True)
-            print(*new_bots, sep = " | \n")
+
+            for i in range(len(new_bots)):
+                t.add_row([i, new_bots[i].eat_food])
+            print(t)
+
             for bot in new_bots:
                 self.world[bot.x][bot.y] = [0, None, None]
 

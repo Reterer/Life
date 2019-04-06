@@ -2,7 +2,7 @@
 
 from PyQt5 import QtCore, QtWidgets
 from OpenGL import GL, GLU
-from PyQt5.QtCore import QPointF, Qt
+from PyQt5.QtCore import QPointF, Qt, QPoint
 from PyQt5.QtGui import (QBrush, QColor, QFont, QLinearGradient, QPainter, QPen)
 from PyQt5.QtWidgets import QOpenGLWidget
 import Config as Config
@@ -11,39 +11,38 @@ import Config as Config
 class Helper(object):
 
     def __init__(self):
-        gradient = QLinearGradient(QPointF(50, -20), QPointF(80, 20))
-        gradient.setColorAt(0.0, Qt.white)
-        gradient.setColorAt(1.0, QColor(0xa6, 0xce, 0x39))
 
         self.background = QBrush(QColor(0, 0, 0))
-        self.circleBrush = QBrush(QColor(255, 0, 0))
-        self.food = QBrush(QColor(0, 255, 0))
+        self.botBrush = QBrush(QColor(255, 0, 0))
+        self.foodBrush = QBrush(QColor(0, 255, 0))
         self.circlePen = QPen(Qt.black)
         self.circlePen.setWidth(1)
         self.textPen = QPen(Qt.white)
         self.textFont = QFont()
-        self.textFont.setPixelSize(50)
+        self.textFont.setPixelSize(8)
 
     def paint(self, painter, event, *args):
         painter.fillRect(event.rect(), self.background)
         painter.translate(100, 100)
 
         painter.save()
-        painter.setBrush(self.circleBrush)
-        painter.setPen(self.circlePen)
 
         for i in range(len(args[0])):
             if i <= len(args[0]):
-                painter.drawEllipse(args[0][i].x+args[0][i].radius/2, args[0][i].y+args[0][i].radius/2, args[0][i].radius, args[0][i].radius)
+                painter.setBrush(self.botBrush)
+                painter.setPen(self.circlePen)
+                painter.drawEllipse(args[0][i].x, args[0][i].y-args[0][i].radius/2, args[0][i].radius, args[0][i].radius)
+                painter.setPen(self.textPen)
+                painter.setFont(self.textFont)
+                painter.drawText(QPoint(args[0][i].x-args[0][i].radius/2, args[0][i].y-args[0][i].radius/2), str(i))
 
-        painter.setBrush(self.food)
+
         for i in range(len(args[1])):
             if i <= len(args[1]):
+                painter.setBrush(self.foodBrush)
                 painter.drawEllipse(args[1][i].x+args[1][i].radius/2, args[1][i].y+args[1][i].radius/2, args[1][i].radius, args[1][i].radius)
 
         painter.restore()
-        painter.setPen(self.textPen)
-        painter.setFont(self.textFont)
 
 
 class GLWidget(QOpenGLWidget):
@@ -103,14 +102,6 @@ class Ui_MainWindow(object):
         self.formLayout.setHorizontalSpacing(5)
         self.formLayout.setVerticalSpacing(8)
         self.formLayout.setObjectName("formLayout")
-        self.labelUpdate = QtWidgets.QLabel(self.gbSettings)
-        self.labelUpdate.setObjectName("labelUpdate")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.labelUpdate)
-        self.spinBox = QtWidgets.QSpinBox(self.gbSettings)
-        self.spinBox.setMinimum(1)
-        self.spinBox.setMaximum(100)
-        self.spinBox.setObjectName("spinBox")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.spinBox)
         self.labelDump = QtWidgets.QLabel(self.gbSettings)
         self.labelDump.setObjectName("labelDump")
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.labelDump)
@@ -214,7 +205,6 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Главное меню"))
         self.gbSettings.setTitle(_translate("MainWindow", "Настройки"))
-        self.labelUpdate.setText(_translate("MainWindow", "Update Timer"))
         self.labelDump.setText(_translate("MainWindow", "Dump: "))
         self.label_7.setText(_translate("MainWindow", "Null"))
         self.label_8.setText(_translate("MainWindow", "Epoh:"))

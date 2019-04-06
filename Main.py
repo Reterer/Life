@@ -18,11 +18,14 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.setupUi(self)  # Инициализирую gui
         t1 = threading.Thread(target=self.__update)
         t1.start()
+        self.label_5.setText(str(len(self.environment.food)))
 
     def __update(self):
         while True:
             self.openGLWidget._upgrade(self.environment.bots, self.environment.food)
             self.environment.update()
+            self.label_9.setText(str(self.environment.epoch))
+            self.label_3.setText(str(len(self.environment.bots)))
 
 
 def main():
