@@ -85,8 +85,8 @@ class Environment:
         for x in range(max(x_bot - 2 * r_bot, 0), min(x_bot + 2 * r_bot, WIDTH_MAP)):
             for y in range(max(y_bot - 2 * r_bot, 0), min(y_bot + 2 * r_bot, HEIGHT_MAP)):
                 if self.world[x][y][0] == 1:
-                    sq_dist = (x - self.food[self.world[x][y][1]].x) ** 2 + (y - self.food[self.world[x][y][1]].y) ** 2
-                    if sq_dist <= 5 * (r_bot + self.food[self.world[x][y][1]].radius) ** 2:
+                    sq_dist = (x - x_bot) ** 2 + (y - y_bot) ** 2
+                    if sq_dist < (r_bot + self.food[self.world[x][y][1]].radius) ** 2:
                         self.bots[i_bot].energy += self.food[self.world[x][y][1]].energy
                         self.bots[i_bot].eat_food += 1
                         self._generate_new_food(self.world[x][y][1])
