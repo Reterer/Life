@@ -73,11 +73,11 @@ class Environment:
         x = self.food[id_food].x
         y = self.food[id_food].y
         self.world[x][y] = [0, None, None]
-        x = random.randint(0, WIDTH_MAP-1)
-        y = random.randint(0, HEIGHT_MAP-1)
+        x = random.randint(0, WIDTH_MAP - 1)
+        y = random.randint(0, HEIGHT_MAP - 1)
         while self.world[x][y][0] != 0:
-            x = random.randint(0, WIDTH_MAP-1)
-            y = random.randint(0, HEIGHT_MAP-1)
+            x = random.randint(0, WIDTH_MAP - 1)
+            y = random.randint(0, HEIGHT_MAP - 1)
         self.world[x][y] = [1, id_food, self.food[id_food].radius]
         self.food[id_food].x = x
         self.food[id_food].y = y
@@ -153,10 +153,10 @@ class Environment:
 
         rnd = random.randint(0, 99)
         if rnd < 30:
-           if random.randint(0, 1) == 0:
-               self._mutation(a_bot)
-           else:
-               self._mutation(b_bot)
+            if random.randint(0, 1) == 0:
+                self._mutation(a_bot)
+            else:
+                self._mutation(b_bot)
 
         return a_bot, b_bot
 
@@ -167,9 +167,10 @@ class Environment:
     def save(self):
         if len(self.bots) > 0 and self.last_save + AUTO_SAVE_INTERVAL < time.time():
             self.last_save = time.time()
-            f = open('dumps\\dump '+datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), 'wb')
+            f = open('dumps\\dump ' + datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), 'wb')
             pickle.dump(self, f)
             f.close()
+            print(utils.bordered("Information", "Saved!"))
 
     def update(self):
         self.crt_iter += 1
@@ -179,8 +180,9 @@ class Environment:
             self.epoch += 1
             self.crt_iter = 0
             print(utils.bordered("Information",
-                                 " Data: {0},\n Epoch: {1}, Bots: {2}".format(datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), self.epoch, len(self.bots))))
-
+                                 " Data: {0},\n Epoch: {1}, Bots: {2}".format(
+                                     datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), self.epoch,
+                                     len(self.bots))))
 
             t = PrettyTable(['#', 'id', 'Score'])
             new_bots = sorted(self.bots, key=lambda bot: bot.eat_food, reverse=True)
@@ -242,7 +244,8 @@ class Environment:
                                 x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                             self.world[x][y] = [0, i, 8]
                             yield Bot(i, x, y, 1000, [0, 0])
-                    new_bots += [i for i in generate_bot(15-len(new_bots))]
+
+                    new_bots += [i for i in generate_bot(15 - len(new_bots))]
 
                 self.bots = new_bots
 
