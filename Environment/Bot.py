@@ -1,4 +1,3 @@
-import random
 import numpy as np
 import math
 import Environment.ActivationFunc as af
@@ -30,6 +29,9 @@ class Bot:
 
         self.W_2 = (np.random.random((self.l1, self.l2)) - 0.5) * 2
         self.b_2 = (np.random.random(self.l2) - 0.5) * 2
+
+    def __str__(self):
+        return "{} {}".format(self.energy, self.eat_food)
 
     def _predict(self, data):
         y1 = af.relu(np.matmul(data, self.W_1) + self.b_1)

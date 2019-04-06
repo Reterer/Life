@@ -33,11 +33,13 @@ class Helper(object):
         painter.setPen(self.circlePen)
 
         for i in range(len(args[0])):
-            painter.drawEllipse(args[0][i].x, args[0][i].y, args[0][i].radius, args[0][i].radius)
+            if i <= len(args[0]):
+                painter.drawEllipse(args[0][i].x, args[0][i].y, args[0][i].radius, args[0][i].radius)
 
         painter.setBrush(self.food)
         for i in range(len(args[1])):
-            painter.drawEllipse(args[1][i].x, args[1][i].y, args[1][i].radius, args[1][i].radius)
+            if i <= len(args[0]):
+                painter.drawEllipse(args[1][i].x+args[1][i].radius/2, args[1][i].y+args[1][i].radius/2, args[1][i].radius, args[1][i].radius)
 
         painter.restore()
         painter.setPen(self.textPen)
@@ -51,7 +53,7 @@ class GLWidget(QOpenGLWidget):
         self.this = parent
         self.helper = helper
         self.elapsed = 0
-        self.setAutoFillBackground(False)
+        self.setAutoFillBackground(True)
         self.bots = []
         self.food = []
 

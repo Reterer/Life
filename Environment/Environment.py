@@ -86,7 +86,7 @@ class Environment:
             for y in range(max(y_bot - 2 * r_bot, 0), min(y_bot + 2 * r_bot, HEIGHT_MAP)):
                 if self.world[x][y][0] == 1:
                     sq_dist = (x - x_bot) ** 2 + (y - y_bot) ** 2
-                    if sq_dist < (r_bot + self.food[self.world[x][y][1]].radius) ** 2:
+                    if sq_dist*4 < (r_bot + self.food[self.world[x][y][1]].radius) ** 2:
                         self.bots[i_bot].energy += self.food[self.world[x][y][1]].energy
                         self.bots[i_bot].eat_food += 1
                         self._generate_new_food(self.world[x][y][1])
@@ -164,10 +164,11 @@ class Environment:
         # print(self.crt_iter, self.epoch)
         #  Переход на новую эпоху
         if self.crt_iter == self.iter_for_epoch:
+            print(self.crt_iter, self.epoch)
             self.epoch += 1
             self.crt_iter = 0
             new_bots = sorted(self.bots, key=lambda bot: bot.eat_food, reverse=True)
-
+            print(*new_bots)
             for bot in new_bots:
                 self.world[bot.x][bot.y] = [0, None, None]
 
