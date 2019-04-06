@@ -6,6 +6,7 @@ from OpenGL.GLUT import *
 from Gui import design
 from Environment.Environment import *
 import Utils as utils
+import qdarkgraystyle
 
 
 class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
@@ -61,10 +62,10 @@ def main():
                 environment.update()
         else:
             app = QtWidgets.QApplication(sys.argv)
+            app.setStyleSheet(qdarkgraystyle.load_stylesheet())
             window = Apps(path)
             window.show()
             app.exec_()
-
 
 
 if __name__ == '__main__':
