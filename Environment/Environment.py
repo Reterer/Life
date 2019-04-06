@@ -190,14 +190,7 @@ class Environment:
 
             new_bots = new_bots[:min(20, len(new_bots))]
             if len(new_bots) < 10:
-                def generate_bot(i):
-                    for i in range(i):
-                        x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
-                        while self.world[x][y][0] != 0:
-                            x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
-                        self.world[x][y] = [0, i, 8]
-                        yield Bot(i, x, y, 1000, [0, 0])
-                new_bots += new_bots + [i for i in generate_bot(10)]
+                new_bots += new_bots
             len_bots = len(new_bots)
             if len_bots > 0:
                 #  Получение новых ботов
@@ -236,6 +229,17 @@ class Environment:
                     new_bots[i] = self.new_bot(new_bots[i])
 
                 random.shuffle(new_bots)
+
+                if len(new_bots) < 10:
+                    def generate_bot(i):
+                        for i in range(i):
+                            x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
+                            while self.world[x][y][0] != 0:
+                                x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
+                            self.world[x][y] = [0, i, 8]
+                            yield Bot(i, x, y, 1000, [0, 0])
+                    new_bots += [i for i in generate_bot(15-len(new_bots))]
+
                 self.bots = new_bots
 
                 self.save()
