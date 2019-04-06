@@ -30,12 +30,20 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 
 def main():
-    app = QtWidgets.QApplication(sys.argv)
-    window = Apps()
-    window.show()
-
-    app.exec_()
-
+    print(sys.argv)
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "-train":
+            environment = Environment()
+            environment.setup()
+            while True:
+                environment.update()
+        if sys.argv[1] == "-test":
+            app = QtWidgets.QApplication(sys.argv)
+            window = Apps()
+            window.show()
+            app.exec_()
+    else:
+        print("321")
 
 if __name__ == '__main__':
     main()
