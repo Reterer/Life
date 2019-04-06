@@ -39,7 +39,7 @@ class Helper(object):
         painter.setBrush(self.food)
         for i in range(len(args[1])):
             if i <= len(args[0]):
-                painter.drawEllipse(args[1][i].x, args[1][i].y, args[1][i].radius-args[1][i].radius/2, args[1][i].radius-args[1][i].radius/2)
+                painter.drawEllipse(args[1][i].x-args[1][i].radius/2, args[1][i].y-args[1][i].radius/2, args[1][i].radius, args[1][i].radius)
 
         painter.restore()
         painter.setPen(self.textPen)
