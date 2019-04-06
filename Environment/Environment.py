@@ -1,4 +1,6 @@
 import random
+import pickle
+import datetime
 import numpy as np
 
 from Config import *
@@ -86,7 +88,7 @@ class Environment:
             for y in range(max(y_bot - 2 * r_bot, 0), min(y_bot + 2 * r_bot, HEIGHT_MAP)):
                 if self.world[x][y][0] == 1:
                     sq_dist = (x - x_bot) ** 2 + (y - y_bot) ** 2
-                    if sq_dist*4 < (r_bot + self.food[self.world[x][y][1]].radius) ** 2:
+                    if sq_dist < (r_bot + self.food[self.world[x][y][1]].radius) ** 2:
                         self.bots[i_bot].energy += self.food[self.world[x][y][1]].energy
                         self.bots[i_bot].eat_food += 1
                         self._generate_new_food(self.world[x][y][1])
@@ -159,6 +161,11 @@ class Environment:
         self.world[self.bots[i].x][self.bots[i].y] = [0, None, None]
         self.bots.pop(i)
 
+    def save(self):
+        f = open('dumps\\dump '+datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), 'wb')
+        pickle.dump(self, f)
+        f.close()
+
     def update(self):
         self.crt_iter += 1
         if self.crt_iter % 10 == 0:
@@ -215,6 +222,8 @@ class Environment:
 
                 random.shuffle(new_bots)
                 self.bots = new_bots
+
+                self.save()
             else:
                 pass
 
