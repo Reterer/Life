@@ -22,6 +22,10 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
             f.close()
         else:
             self.environment.setup()  # Произвожу первоначальную настройку
+            print(utils.bordered("Information",
+                                 " Data: {0},\n Epoch: {1}, Bots: {2}".format(
+                                     datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), 0,
+                                 20)))
 
         self.setupUi(self)  # Инициализирую gui
         t1 = threading.Thread(target=self.__update)
@@ -30,10 +34,13 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def __update(self):
         while True:
-            self.openGLWidget._upgrade(self.environment.bots, self.environment.food)
-            self.environment.update()
-            self.label_9.setText(str(self.environment.epoch))
-            self.label_3.setText(str(len(self.environment.bots)))
+            try:
+                self.openGLWidget._upgrade(self.environment.bots, self.environment.food)
+                self.environment.update()
+                self.label_9.setText(str(self.environment.epoch))
+                self.label_3.setText(str(len(self.environment.bots)))
+            except Exception as e:
+                print(utils.bordered("Ошибка", "Message: {0}".format(e)))
 
 
 def main():
@@ -58,6 +65,11 @@ def main():
                 f.close()
             else:
                 environment.setup()
+                print(utils.bordered("Information",
+                                     " Data: {0},\n Epoch: {1}, Bots: {2}".format(
+                                         datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), 0,
+                                         20)))
+
             while True:
                 environment.update()
         else:

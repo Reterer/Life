@@ -7,6 +7,7 @@ from Config import *
 from Environment.Bot import Bot
 from Environment.Food import Food
 from prettytable import PrettyTable
+import Utils as utils
 
 
 class Environment:
@@ -174,9 +175,12 @@ class Environment:
         self.crt_iter += 1
         #  Переход на новую эпоху
         if self.crt_iter == self.iter_for_epoch:
-            print(self.crt_iter, self.epoch)
+
             self.epoch += 1
             self.crt_iter = 0
+            print(utils.bordered("Information",
+                                 " Data: {0},\n Epoch: {1}, Bots: {2}".format(datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), self.epoch, len(self.bots))))
+
 
             t = PrettyTable(['#', 'id', 'Score'])
             new_bots = sorted(self.bots, key=lambda bot: bot.eat_food, reverse=True)

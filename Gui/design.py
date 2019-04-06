@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import (QBrush, QColor, QFont, QPainter, QPen)
 from PyQt5.QtWidgets import QOpenGLWidget
 import Config as Config
-
+import Utils as utils
 
 class Helper(object):
 
@@ -22,26 +22,32 @@ class Helper(object):
         self.textFont.setPixelSize(Config.fontSize)
 
     def paint(self, painter, event, *args):
-        painter.fillRect(event.rect(), self.background)
-        painter.translate(5, 5)
+        try:
+            painter.fillRect(event.rect(), self.background)
+            painter.translate(5, 5)
 
-        painter.save()
+            painter.save()
 
-        for i in range(len(args[0])):
-            if i <= len(args[0]):
-                painter.setBrush(self.botBrush)
-                painter.setPen(self.circlePen)
-                painter.drawEllipse(args[0][i].x, args[0][i].y-args[0][i].radius/2, args[0][i].radius, args[0][i].radius)
-                painter.setPen(self.textPen)
-                painter.setFont(self.textFont)
-                painter.drawText(QPoint(args[0][i].x-args[0][i].radius/2, args[0][i].y-args[0][i].radius/2), str(args[0][i].id)+" | "+str(round(--args[0][i].energy)))
+            for i in range(len(args[0])):
+                if i <= len(args[0]):
+                    painter.setBrush(self.botBrush)
+                    painter.setPen(self.circlePen)
+                    painter.drawEllipse(args[0][i].x, args[0][i].y - args[0][i].radius / 2, args[0][i].radius,
+                                        args[0][i].radius)
+                    painter.setPen(self.textPen)
+                    painter.setFont(self.textFont)
+                    painter.drawText(QPoint(args[0][i].x - args[0][i].radius / 2, args[0][i].y - args[0][i].radius / 2),
+                                     str(args[0][i].id) + " | " + str(round(--args[0][i].energy)))
 
-        for i in range(len(args[1])):
-            if i <= len(args[1]):
-                painter.setBrush(self.foodBrush)
-                painter.drawEllipse(args[1][i].x+args[1][i].radius/2, args[1][i].y+args[1][i].radius/2, args[1][i].radius, args[1][i].radius)
+            for i in range(len(args[1])):
+                if i <= len(args[1]):
+                    painter.setBrush(self.foodBrush)
+                    painter.drawEllipse(args[1][i].x + args[1][i].radius / 2, args[1][i].y + args[1][i].radius / 2,
+                                        args[1][i].radius, args[1][i].radius)
 
-        painter.restore()
+            painter.restore()
+        except Exception as e:
+            print(utils.bordered("Ошибка", "Message: {0}".format(e)))
 
 
 class GLWidget(QOpenGLWidget):
