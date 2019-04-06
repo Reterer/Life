@@ -8,13 +8,23 @@ from Gui import design
 from Environment.Environment import *
 
 
+def bordered(title, body):
+    lines = body.splitlines()
+    width = max(len(s) for s in lines)
+    res = ['╒═' + title + '═' * (width - len(title) - 1) + '╕']
+    for s in lines:
+        res.append('│' + (s + ' ' * width)[:width] + '│')
+    res.append('╘' + '═' * width + '╛')
+    return '\n'.join(res)
+
+
 class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def __init__(self):
         super().__init__()
-        self.environment = Environment()                                            # Инициализирую среду
-        self.environment.setup()                                                    # Произвожу первоначальную настройку
-        self.setupUi(self)                                                          # Инициализирую gui
+        self.environment = Environment()  # Инициализирую среду
+        self.environment.setup()  # Произвожу первоначальную настройку
+        self.setupUi(self)  # Инициализирую gui
         t1 = threading.Thread(target=self.__update)
         t1.start()
 
@@ -26,20 +36,26 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 
 def main():
-    print(sys.argv)
+    print(bordered("Information", " Run the program with arguments: {0}".format(sys.argv)))
     if len(sys.argv) > 1:
         if sys.argv[1] == "-train":
             environment = Environment()
             environment.setup()
             while True:
                 environment.update()
+
         if sys.argv[1] == "-test":
             app = QtWidgets.QApplication(sys.argv)
             window = Apps()
             window.show()
             app.exec_()
     else:
-        print("321")
+        app = QtWidgets.QApplication(sys.argv)
+        window = Apps()
+        window.show()
+        app.exec_()
+
+
 
 if __name__ == '__main__':
     main()

@@ -68,11 +68,11 @@ class Environment:
         x = self.food[id_food].x
         y = self.food[id_food].y
         self.world[x][y] = [0, None, None]
-        x = random.randint(0, WIDTH_MAP)
-        y = random.randint(0, HEIGHT_MAP)
+        x = random.randint(0, WIDTH_MAP-1)
+        y = random.randint(0, HEIGHT_MAP-1)
         while self.world[x][y][0] != 0:
-            x = random.randint(0, WIDTH_MAP)
-            y = random.randint(0, HEIGHT_MAP)
+            x = random.randint(0, WIDTH_MAP-1)
+            y = random.randint(0, HEIGHT_MAP-1)
         self.world[x][y] = [1, id_food, self.food[id_food].radius]
         self.food[id_food].x = x
         self.food[id_food].y = y
