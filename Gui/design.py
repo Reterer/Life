@@ -47,7 +47,7 @@ class Helper(object):
 
             painter.restore()
         except Exception as e:
-            print(utils.bordered("Ошибка", "Message: {0}".format(e)))
+            print(utils.bordered("Error", "Message: {0}".format(e)))
 
 
 class GLWidget(QOpenGLWidget):

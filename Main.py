@@ -39,8 +39,8 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
                 self.environment.update()
                 self.label_9.setText(str(self.environment.epoch))
                 self.label_3.setText(str(len(self.environment.bots)))
-            except Exception as e:
-                print(utils.bordered("Ошибка", "Message: {0}".format(e)))
+            except Exception:
+                print(utils.bordered("Error", "Message: {0}".format(traceback.print_exc())))
 
 
 def main():
