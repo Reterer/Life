@@ -16,18 +16,18 @@ class Bot:
         self.eat_food = 0
 
         # Гены
-        self.eyes_count = 10  # Кол-во глаз
+        self.eyes_count = 12  # Кол-во глаз
         self.raycast_d = 6  # Шаг рэйкаста - чем меньше, тем более точно, но более медленно
-        self.raycast_distans = 60  # Как далеко идет луч
+        self.raycast_distans = 70  # Как далеко идет луч
 
         # Нейронка
         self.l1 = 6  # Кол-во выходных нейронов первого слоя
         self.l2 = 3  # Кол-во выходных нейронов второго слоя
 
-        self.W_1 = (np.random.random((self.eyes_count + 1, self.l1)) - 0.5) * 0.2
+        self.W_1 = (np.random.random((self.eyes_count + 1, self.l1)) - 0.5) * 5
         self.b_1 = (np.random.random(self.l1) - 0.5) * 0.2
 
-        self.W_2 = (np.random.random((self.l1, self.l2)) - 0.5) * 0.2
+        self.W_2 = (np.random.random((self.l1, self.l2)) - 0.5) * 5
         self.b_2 = (np.random.random(self.l2) - 0.5) * 0.2
 
     def __str__(self):
@@ -72,4 +72,5 @@ class Bot:
                         data[i] = 1 / di
                         break
                 di += self.raycast_d
+        data[-1] = self.energy/2000
         return self._predict(data)

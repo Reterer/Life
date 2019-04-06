@@ -14,7 +14,16 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.environment = Environment()  # Инициализирую среду
-        self.environment.setup()  # Произвожу первоначальную настройку
+        path = "null"
+        for i in range(len(sys.argv)):
+            if i == "-o":
+                if i + 1 < len(sys.argv):
+                    path = sys.argv[i + 1]
+        if path != "null":
+            self.environment = pickle.load(path)
+        else:
+            self.environment.setup()  # Произвожу первоначальную настройку
+
         self.setupUi(self)  # Инициализирую gui
         t1 = threading.Thread(target=self.__update)
         t1.start()
@@ -29,24 +38,33 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 
 def main():
-    print(utils.bordered("Information", " Run the program with arguments: {0}".format(sys.argv)))
+
     if len(sys.argv) > 1:
-        if sys.argv[1] == "-train":
+        path = "null"
+        mode = "test"
+        for i in range(len(sys.argv)):
+            if sys.argv[i] == "-o":
+                if i + 1 < len(sys.argv):
+                    path = sys.argv[i + 1]
+            if sys.argv[i] == "-train":
+                mode = "train"
+
+        print(utils.bordered("Information", " Run the program with arguments: {0},\n Path: {1}, Mode: {2}".format(sys.argv, path,mode)))
+        if mode == "train":
             environment = Environment()
-            environment.setup()
+            if path != "null":
+                f = open(path, 'rb')
+                environment = pickle.load(f)
+                f.close()
+            else:
+                environment.setup()
             while True:
                 environment.update()
-
-        if sys.argv[1] == "-test":
+        else:
             app = QtWidgets.QApplication(sys.argv)
             window = Apps()
             window.show()
             app.exec_()
-    else:
-        app = QtWidgets.QApplication(sys.argv)
-        window = Apps()
-        window.show()
-        app.exec_()
 
 
 

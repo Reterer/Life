@@ -180,7 +180,7 @@ class Environment:
             new_bots = sorted(self.bots, key=lambda bot: bot.eat_food, reverse=True)
 
             for i in range(len(new_bots)):
-                t.add_row([i, new_bots[i].eat_food])
+                t.add_row([new_bots[i].id, new_bots[i].eat_food])
             print(t)
 
             for bot in new_bots:
@@ -247,7 +247,7 @@ class Environment:
                 self.bots.append(bot_b)
             else:
                 new_vel = self.bots[i].vel
-                self.bots[i].energy -= dx + dy
+                self.bots[i].energy -= 0.5 + abs(dx + dy)
 
                 if self.bots[i].energy <= 0:
                     self._die_bot(i)
