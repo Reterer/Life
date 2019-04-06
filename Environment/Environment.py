@@ -1,6 +1,7 @@
 import random
 import pickle
 import datetime
+import time
 import numpy as np
 from Config import *
 from Environment.Bot import Bot
@@ -11,6 +12,7 @@ from prettytable import PrettyTable
 class Environment:
     def __init__(self):
         # self._setup()
+        self.last_save = time.time()
         pass
 
     def setup(self, filename=None):
@@ -19,7 +21,7 @@ class Environment:
         else:
             self._setup()
 
-    def _setup(self, world=None, bots=None, food=None, epoch=0, iter_for_epoch=500, crt_iter=0):
+    def _setup(self, world=None, bots=None, food=None, epoch=0, iter_for_epoch=ITER_FOR_EPOCH, crt_iter=0):
         self.epoch = epoch
         self.iter_for_epoch = iter_for_epoch
         self.crt_iter = crt_iter
@@ -162,14 +164,14 @@ class Environment:
         self.bots.pop(i)
 
     def save(self):
-        f = open('dumps\\dump '+datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), 'wb')
-        pickle.dump(self, f)
-        f.close()
+        if len(self.bots) > 0 and self.last_save + AUTO_SAVE_INTERVAL < time.time():
+            self.last_save = time.time()
+            f = open('dumps\\dump '+datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), 'wb')
+            pickle.dump(self, f)
+            f.close()
 
     def update(self):
         self.crt_iter += 1
-        if self.crt_iter % 10 == 0:
-            print(self.crt_iter, self.epoch)
         #  Переход на новую эпоху
         if self.crt_iter == self.iter_for_epoch:
             print(self.crt_iter, self.epoch)
@@ -188,7 +190,14 @@ class Environment:
 
             new_bots = new_bots[:min(20, len(new_bots))]
             if len(new_bots) < 10:
-                new_bots += new_bots
+                def generate_bot(i):
+                    for i in range(i):
+                        x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
+                        while self.world[x][y][0] != 0:
+                            x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
+                        self.world[x][y] = [0, i, 8]
+                        yield Bot(i, x, y, 1000, [0, 0])
+                new_bots += new_bots + [i for i in generate_bot(10)]
             len_bots = len(new_bots)
             if len_bots > 0:
                 #  Получение новых ботов
