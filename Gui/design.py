@@ -34,11 +34,11 @@ class Helper(object):
 
         for i in range(len(args[0])):
             if i <= len(args[0]):
-                painter.drawEllipse(args[0][i].x, args[0][i].y, args[0][i].radius, args[0][i].radius)
+                painter.drawEllipse(args[0][i].x+args[0][i].radius/2, args[0][i].y+args[0][i].radius/2, args[0][i].radius, args[0][i].radius)
 
         painter.setBrush(self.food)
         for i in range(len(args[1])):
-            if i <= len(args[0]):
+            if i <= len(args[1]):
                 painter.drawEllipse(args[1][i].x+args[1][i].radius/2, args[1][i].y+args[1][i].radius/2, args[1][i].radius, args[1][i].radius)
 
         painter.restore()
