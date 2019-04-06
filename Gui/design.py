@@ -19,11 +19,11 @@ class Helper(object):
         self.circlePen.setWidth(1)
         self.textPen = QPen(Qt.white)
         self.textFont = QFont()
-        self.textFont.setPixelSize(8)
+        self.textFont.setPixelSize(Config.fontSize)
 
     def paint(self, painter, event, *args):
         painter.fillRect(event.rect(), self.background)
-        painter.translate(100, 100)
+        painter.translate(10, 10)
 
         painter.save()
 
@@ -34,8 +34,7 @@ class Helper(object):
                 painter.drawEllipse(args[0][i].x, args[0][i].y-args[0][i].radius/2, args[0][i].radius, args[0][i].radius)
                 painter.setPen(self.textPen)
                 painter.setFont(self.textFont)
-                painter.drawText(QPoint(args[0][i].x-args[0][i].radius/2, args[0][i].y-args[0][i].radius/2), str(i))
-
+                painter.drawText(QPoint(args[0][i].x-args[0][i].radius/2, args[0][i].y-args[0][i].radius/2), str(args[0][i].id))
 
         for i in range(len(args[1])):
             if i <= len(args[1]):
@@ -59,7 +58,7 @@ class GLWidget(QOpenGLWidget):
     def initializeGL(self):
         GL.glClearColor(0, 0, 0, 0)
         GL.glMatrixMode(GL.GL_PROJECTION)
-        GLU.gluOrtho2D(0, Config.HEIGHT_MAP, 0, Config.WIDTH_MAP)
+        GLU.gluOrtho2D(0, 0, 0, 0)
 
     def _upgrade(self, *args):
         self.bots = args[0]

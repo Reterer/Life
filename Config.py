@@ -9,3 +9,5 @@ ENABLE_GUI = False
 DRAW = True
 
 F_tr = 0.2
+
+fontSize = 10
