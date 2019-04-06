@@ -1,24 +1,76 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QEventLoop, QThread, QTimer
-from PyQt5.QtOpenGL import QGL, QGLFormat, QGLWidget
 from OpenGL import GL, GLU
-import Config
+from PyQt5.QtCore import QPointF, Qt
+from PyQt5.QtGui import (QBrush, QColor, QFont, QLinearGradient, QPainter, QPen)
+from PyQt5.QtWidgets import QOpenGLWidget
+import Config as Config
 
 
-class GLWidget(QGLWidget):
+class Helper(object):
 
-    def __init__(self, parent):
-        super(GLWidget, self).__init__(QGLFormat(QGL.SampleBuffers), parent)
+    def __init__(self):
+        gradient = QLinearGradient(QPointF(50, -20), QPointF(80, 20))
+        gradient.setColorAt(0.0, Qt.white)
+        gradient.setColorAt(1.0, QColor(0xa6, 0xce, 0x39))
+
+        self.background = QBrush(QColor(0, 0, 0))
+        self.circleBrush = QBrush(QColor(255, 0, 0))
+        self.food = QBrush(QColor(0, 255, 0))
+        self.circlePen = QPen(Qt.black)
+        self.circlePen.setWidth(1)
+        self.textPen = QPen(Qt.white)
+        self.textFont = QFont()
+        self.textFont.setPixelSize(50)
+
+    def paint(self, painter, event, *args):
+        painter.fillRect(event.rect(), self.background)
+        painter.translate(100, 100)
+
+        painter.save()
+        painter.setBrush(self.circleBrush)
+        painter.setPen(self.circlePen)
+
+        for i in range(len(args[0])):
+            painter.drawEllipse(args[0][i].x, args[0][i].y, args[0][i].radius, args[0][i].radius)
+
+        painter.setBrush(self.food)
+        for i in range(len(args[1])):
+            painter.drawEllipse(args[1][i].x, args[1][i].y, args[1][i].radius, args[1][i].radius)
+
+        painter.restore()
+        painter.setPen(self.textPen)
+        painter.setFont(self.textFont)
+
+
+class GLWidget(QOpenGLWidget):
+
+    def __init__(self, helper, parent):
+        super(GLWidget, self).__init__(parent.splitter)
+        self.this = parent
+        self.helper = helper
+        self.elapsed = 0
+        self.setAutoFillBackground(False)
+        self.bots = []
+        self.food = []
 
     def initializeGL(self):
         GL.glClearColor(0, 0, 0, 0)
         GL.glMatrixMode(GL.GL_PROJECTION)
         GLU.gluOrtho2D(0, Config.HEIGHT_MAP, 0, Config.WIDTH_MAP)
 
-    def resizeGL(self, w, h):
-        GL.glViewport(0, 0, Config.HEIGHT_MAP, Config.WIDTH_MAP)
+    def _upgrade(self, *args):
+        self.bots = args[0]
+        self.food = args[1]
+        self.update()
+
+    def paintEvent(self, event):
+        painter = QPainter()
+        painter.begin(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        self.helper.paint(painter, event, self.bots, self.food)
+        painter.end()
 
 
 class Ui_MainWindow(object):
@@ -33,7 +85,8 @@ class Ui_MainWindow(object):
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
 
-        self.openGLWidget = GLWidget(self.splitter)
+        helper = Helper()
+        self.openGLWidget = GLWidget(helper, self)
         self.openGLWidget.setGeometry(QtCore.QRect(0, 0, Config.HEIGHT_MAP, Config.WIDTH_MAP))
         self.openGLWidget.setMinimumSize(Config.HEIGHT_MAP, Config.WIDTH_MAP)
         self.openGLWidget.setObjectName("openGLWidget")
@@ -41,6 +94,7 @@ class Ui_MainWindow(object):
         self.gbSettings = QtWidgets.QGroupBox(self.splitter)
         self.gbSettings.setMinimumSize(QtCore.QSize(215, 0))
         self.gbSettings.setObjectName("gbSettings")
+
         self.formLayout = QtWidgets.QFormLayout(self.gbSettings)
         self.formLayout.setRowWrapPolicy(QtWidgets.QFormLayout.DontWrapRows)
         self.formLayout.setContentsMargins(10, 5, 5, 39)
@@ -151,7 +205,6 @@ class Ui_MainWindow(object):
         self.formLayout.setWidget(6, QtWidgets.QFormLayout.FieldRole, self.checkBox_2)
         self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -175,5 +228,3 @@ class Ui_MainWindow(object):
         self.checkBox_2.setText(_translate("MainWindow", "(Y/N)"))
         self.tbScores.setSortingEnabled(True)
         self.tbScores.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-
-

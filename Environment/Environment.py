@@ -17,7 +17,7 @@ class Environment:
         else:
             self._setup()
 
-    def _setup(self, world=None, bots=None, food=None, epoch=0, iter_for_epoch=100, crt_iter=0):
+    def _setup(self, world=None, bots=None, food=None, epoch=0, iter_for_epoch=500, crt_iter=0):
         self.epoch = epoch
         self.iter_for_epoch = iter_for_epoch
         self.crt_iter = crt_iter
@@ -42,7 +42,7 @@ class Environment:
                     while self.world[x][y][0] != 0:
                         x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     self.world[x][y] = [0, i, 8]
-                    yield Bot(i, x, y, 3000, [0, 0])
+                    yield Bot(i, x, y, 1000, [0, 0])
 
             self.bots = [bot for bot in generate_bot(20)]
         if food:
@@ -54,7 +54,7 @@ class Environment:
                     while self.world[x][y][0] != 0:
                         x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     self.world[x][y] = [1, i, 3]
-                    yield Food(x, y, 3, [1, 0, 1], 100)
+                    yield Food(x, y, 5, [1, 0, 1], 100)
 
             self.food = [food for food in generate_food(50)]
 
@@ -68,25 +68,25 @@ class Environment:
         x = self.food[id_food].x
         y = self.food[id_food].y
         self.world[x][y] = [0, None, None]
-        x = random.randint(0, WIDTH_MAP)
-        y = random.randint(0, HEIGHT_MAP)
+        x = random.randint(0, WIDTH_MAP-1)
+        y = random.randint(0, HEIGHT_MAP-1)
         while self.world[x][y][0] != 0:
-            x = random.randint(0, WIDTH_MAP)
-            y = random.randint(0, HEIGHT_MAP)
+            x = random.randint(0, WIDTH_MAP-1)
+            y = random.randint(0, HEIGHT_MAP-1)
         self.world[x][y] = [1, id_food, self.food[id_food].radius]
         self.food[id_food].x = x
         self.food[id_food].y = y
 
-
     #  Взаимодействие ботов с окружающей средой
+
     def _collision(self, i_bot):
         x_bot, y_bot = self.bots[i_bot].x, self.bots[i_bot].y
         r_bot = self.bots[i_bot].radius
-        for x in range(max(x_bot - r_bot, 0), min(x_bot + r_bot, WIDTH_MAP)):
-            for y in range(max(y_bot - r_bot, 0), min(y_bot + r_bot, HEIGHT_MAP)):
+        for x in range(max(x_bot - 2 * r_bot, 0), min(x_bot + 2 * r_bot, WIDTH_MAP)):
+            for y in range(max(y_bot - 2 * r_bot, 0), min(y_bot + 2 * r_bot, HEIGHT_MAP)):
                 if self.world[x][y][0] == 1:
                     sq_dist = (x - self.food[self.world[x][y][1]].x) ** 2 + (y - self.food[self.world[x][y][1]].y) ** 2
-                    if sq_dist <= 2*(r_bot + self.food[self.world[x][y][1]].radius) ** 2:
+                    if sq_dist <= 5 * (r_bot + self.food[self.world[x][y][1]].radius) ** 2:
                         self.bots[i_bot].energy += self.food[self.world[x][y][1]].energy
                         self.bots[i_bot].eat_food += 1
                         self._generate_new_food(self.world[x][y][1])
@@ -161,7 +161,7 @@ class Environment:
 
     def update(self):
         self.crt_iter += 1
-        print(self.crt_iter, self.epoch)
+        # print(self.crt_iter, self.epoch)
         #  Переход на новую эпоху
         if self.crt_iter == self.iter_for_epoch:
             self.epoch += 1
@@ -177,13 +177,13 @@ class Environment:
             len_bots = len(new_bots)
             if len_bots > 0:
                 #  Получение новых ботов
-                a = new_bots[:int(len_bots*0.4)]
+                a = new_bots[:int(len_bots * 0.4)]
                 random.shuffle(new_bots)
-                b_1 = new_bots[:int(len_bots*0.3)]
+                b_1 = new_bots[:int(len_bots * 0.3)]
                 random.shuffle(new_bots)
                 b_2 = new_bots[:int(len_bots * 0.3)]
                 random.shuffle(new_bots)
-                c = new_bots[:int(len_bots*0.3)]
+                c = new_bots[:int(len_bots * 0.3)]
 
                 #  Скрещивание ботов
                 b = []
@@ -192,7 +192,7 @@ class Environment:
                     W_2 = np.copy(pair[random.randint(0, 1)].W_2)
                     B_1 = np.copy(pair[random.randint(0, 1)].b_1)
                     B_2 = np.copy(pair[random.randint(0, 1)].b_2)
-                    b.append(Bot(pair[0].id, pair[0].x, pair[0].y, 3000, [0, 0]))
+                    b.append(Bot(pair[0].id, pair[0].x, pair[0].y, 1000, [0, 0]))
                     b[-1].W_1 = W_1
                     b[-1].W_2 = W_2
                     b[-1].b_1 = B_1
@@ -203,9 +203,9 @@ class Environment:
                 new_bots = a + b + c
 
                 for i in range(len(new_bots)):
-                    x_bot, y_bot = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                    x_bot, y_bot = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     while self.world[x_bot][y_bot][0] != 0:
-                        x_bot, y_bot = random.randint(0, WIDTH_MAP-1), random.randint(0, HEIGHT_MAP-1)
+                        x_bot, y_bot = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     new_bots[i].x = x_bot
                     new_bots[i].y = y_bot
                     self.world[x_bot][y_bot] = [2, bot.id, bot.radius]
