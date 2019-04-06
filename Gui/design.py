@@ -34,7 +34,7 @@ class Helper(object):
                 painter.drawEllipse(args[0][i].x, args[0][i].y-args[0][i].radius/2, args[0][i].radius, args[0][i].radius)
                 painter.setPen(self.textPen)
                 painter.setFont(self.textFont)
-                painter.drawText(QPoint(args[0][i].x, args[0][i].y), str(i))
+                painter.drawText(QPoint(args[0][i].x-args[0][i].radius/2, args[0][i].y-args[0][i].radius/2), str(i))
 
 
         for i in range(len(args[1])):
