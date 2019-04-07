@@ -1,5 +1,7 @@
-import numpy as np
 import math
+
+import numpy as np
+
 import Environment.ActivationFunc as af
 
 
@@ -11,14 +13,14 @@ class Bot:
         self.y = y
         self.energy = energy
         self.vel = vel
-        self.color = [1, 1, 0]
+        self.color = [255, 0, 0]
         self.radius = 10
         self.eat_food = 0
 
         # Гены
         self.eyes_count = 12  # Кол-во глаз
-        self.raycast_d = 2  # Шаг рэйкаста - чем меньше, тем более точно, но более медленно
-        self.raycast_distans = 60  # Как далеко идет луч
+        self.raycast_d = 4  # Шаг рэйкаста - чем меньше, тем более точно, но более медленно
+        self.raycast_distance = 60  # Как далеко идет луч
 
         # Нейронка
         self.l1 = 6  # Кол-во выходных нейронов первого слоя
@@ -43,10 +45,10 @@ class Bot:
 
     def turn(self, world):
 
-        mini_map = world[max(self.x - self.raycast_distans, 0): min(self.x + self.raycast_distans, len(world))]
+        mini_map = world[max(self.x - self.raycast_distance, 0): min(self.x + self.raycast_distance, len(world))]
         for x in range(len(mini_map)):
             mini_map[x] = mini_map[x][
-                          max(self.y - self.raycast_distans, 0): min(self.y + self.raycast_distans, len(mini_map[x]))]
+                          max(self.y - self.raycast_distance, 0): min(self.y + self.raycast_distance, len(mini_map[x]))]
         for y in range(len(mini_map[0])):
             for x in range(len(mini_map)):
                 if mini_map[x][y][0] == 1:
@@ -58,12 +60,12 @@ class Bot:
         data = [0 for _ in range(self.eyes_count + 1)]
         alpha = 6.28 / self.eyes_count
 
-        x_on_minimap = self.x - max(self.x - self.raycast_distans, 0)
-        y_on_minimap = self.y - max(self.y - self.raycast_distans, 0)
+        x_on_minimap = self.x - max(self.x - self.raycast_distance, 0)
+        y_on_minimap = self.y - max(self.y - self.raycast_distance, 0)
         for i in range(self.eyes_count):
             ray = [math.cos(alpha * i), math.sin(alpha * i)]
             di = self.raycast_d
-            while di < self.raycast_distans:
+            while di < self.raycast_distance:
                 x = int(ray[0] * di + x_on_minimap)
                 y = int(ray[1] * di + y_on_minimap)
                 # print(x,y)

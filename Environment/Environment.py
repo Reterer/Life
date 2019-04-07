@@ -1,13 +1,15 @@
-import random
-import pickle
 import datetime
+import pickle
+import random
 import time
+
 import numpy as np
+from prettytable import PrettyTable
+
+import Utils as utils
 from Config import *
 from Environment.Bot import Bot
 from Environment.Food import Food
-from prettytable import PrettyTable
-import Utils as utils
 
 
 class Environment:
@@ -59,7 +61,7 @@ class Environment:
                     while self.world[x][y][0] != 0:
                         x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                     self.world[x][y] = [1, i, 3]
-                    yield Food(x, y, 5, [1, 0, 1], 100)
+                    yield Food(x, y, 7, [0, 255, 0], 100)
 
             self.food = [food for food in generate_food(50)]
 
@@ -167,10 +169,12 @@ class Environment:
     def save(self):
         if len(self.bots) > 0 and self.last_save + AUTO_SAVE_INTERVAL < time.time():
             self.last_save = time.time()
-            f = open('dumps\\dump ' + datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), 'wb')
+            d_now = datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S")
+            f = open('dumps\\' + d_now+'.dump', 'wb')
             pickle.dump(self, f)
             f.close()
-            print(utils.bordered("Information", "Saved!"))
+            print(utils.bordered("Information", " Dump {0} Saved!".format(
+                d_now+'.dump')))
 
     def update(self):
         self.crt_iter += 1
