@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from OpenGL import GL, GLU
-import Utils as utils
-from PyQt5.QtCore import Qt, QPoint, QPointF, QRect
+from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import (QBrush, QColor, QFont, QPainter, QPen)
 from PyQt5.QtWidgets import QOpenGLWidget
+
 import Config as Config
+import Utils as utils
 
 
 class Helper(object):

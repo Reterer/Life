@@ -16,4 +16,3 @@ ITER_FOR_EPOCH = 1000
 F_tr = 0.25
 
 FONT_SIZE = 10
-

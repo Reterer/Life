@@ -172,11 +172,11 @@ class Environment:
         if len(self.bots) > 0 and self.last_save + AUTO_SAVE_INTERVAL < time.time():
             self.last_save = time.time()
             d_now = datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S")
-            f = open('dumps\\' + d_now+'.dump', 'wb')
+            f = open('dumps\\' + d_now + '.dump', 'wb')
             pickle.dump(self, f)
             f.close()
             print(utils.bordered("Information", " Dump {0} Saved!".format(
-                d_now+'.dump')))
+                d_now + '.dump')))
 
     def update(self):
         self.crt_iter += 1

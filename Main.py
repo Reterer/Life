@@ -5,6 +5,7 @@ from threading import Thread
 import qdarkgraystyle
 from OpenGL.GLUT import *
 from PyQt5 import QtWidgets
+
 from Environment.Environment import *
 from Gui import design
 
@@ -41,15 +42,15 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
         i = 0
         while True:
             try:
-                self.environment.update()   # Обновляем среду
+                self.environment.update()  # Обновляем среду
                 if i == 3:
-                    self.openGLWidget.update()   # Обновляем экран
+                    self.openGLWidget.update()  # Обновляем экран
                     time.sleep(0.001)
                     i = 0
 
                 i += 1
-                self.label_9.setText(str(self.environment.epoch))   # Обновляем кол-во эпох
-                self.label_3.setText(str(len(self.environment.bots)))   # Обновляем кол-во ботов
+                self.label_9.setText(str(self.environment.epoch))  # Обновляем кол-во эпох
+                self.label_3.setText(str(len(self.environment.bots)))  # Обновляем кол-во ботов
             except Exception as e:
                 print(utils.bordered("Error", "Message: {0}".format(e)))
                 traceback.print_exc()
