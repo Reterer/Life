@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 HEIGHT_MAP = 800  # Высота карты
 WIDTH_MAP = 800  # Ширина карты
 
