@@ -27,27 +27,25 @@ class Helper(object):
             painter.fillRect(event.rect(), self.background)
             painter.save()
             for i in range(len(self.env.bots)):
-                if i <= len(self.env.bots):
-                    painter.setBrush(
-                        QBrush(QColor(self.env.bots[i].color[0], self.env.bots[i].color[1], self.env.bots[i].color[2])))
-                    painter.setPen(self.circlePen)
-                    painter.drawEllipse(QRect(self.env.bots[i].x + self.env.bots[i].radius / 2,
-                                              self.env.bots[i].y + self.env.bots[i].radius / 2,
-                                              self.env.bots[i].radius,
-                                              self.env.bots[i].radius))
-                    painter.setPen(self.textPen)
-                    painter.setFont(self.textFont)
-                    painter.drawText(QPoint(self.env.bots[i].x, self.env.bots[i].y),
-                                     str(self.env.bots[i].id) + " | " + str(round(self.env.bots[i].energy)))
+                painter.setBrush(
+                    QBrush(QColor(self.env.bots[i].color[0], self.env.bots[i].color[1], self.env.bots[i].color[2])))
+                painter.setPen(self.circlePen)
+                painter.drawEllipse(QRect(self.env.bots[i].x + self.env.bots[i].radius / 2,
+                                          self.env.bots[i].y + self.env.bots[i].radius / 2,
+                                          self.env.bots[i].radius,
+                                          self.env.bots[i].radius))
+                painter.setPen(self.textPen)
+                painter.setFont(self.textFont)
+                painter.drawText(QPoint(self.env.bots[i].x, self.env.bots[i].y),
+                                 str(self.env.bots[i].id) + " | " + str(round(self.env.bots[i].energy)))
 
             for i in range(len(self.env.food)):
-                if i <= len(self.env.food):
-                    painter.setBrush(
-                        QBrush(QColor(self.env.food[i].color[0], self.env.food[i].color[1], self.env.food[i].color[2])))
-                    painter.setPen(self.circlePen)
-                    painter.drawEllipse(self.env.food[i].x + self.env.food[i].radius / 2,
-                                        self.env.food[i].y + self.env.food[i].radius / 2,
-                                        self.env.food[i].radius, self.env.food[i].radius)
+                painter.setBrush(
+                    QBrush(QColor(self.env.food[i].color[0], self.env.food[i].color[1], self.env.food[i].color[2])))
+                painter.setPen(self.circlePen)
+                painter.drawEllipse(self.env.food[i].x + self.env.food[i].radius / 2,
+                                    self.env.food[i].y + self.env.food[i].radius / 2,
+                                    self.env.food[i].radius, self.env.food[i].radius)
             painter.restore()
         except Exception as e:
             print(utils.bordered("Error-Draw", " Message: {0}".format(e)))
