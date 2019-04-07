@@ -288,7 +288,7 @@ class Environment:
                 self.bots.append(bot_b)
             else:
                 new_vel = self.bots[i].vel
-                self.bots[i].energy -= 0.5 + abs(dx + dy)
+                self.bots[i].energy -= 0.1 * DELTA_TIME + abs(dx + dy)
 
                 if self.bots[i].energy <= 0:
                     self._die_bot(i)
@@ -316,7 +316,7 @@ class Environment:
                 if self.world[int(x)][int(y)][0] == 3:
                     x = self.bots[i].x
                     y = self.bots[i].y
-                    self.bots[i].energy -= (new_vel[0]**2 + new_vel[1] ** 2) * self.bots[i].energy//10000
+                    self.bots[i].energy -= (new_vel[0]**2 + new_vel[1] ** 2) * self.bots[i].energy//1000
                     new_vel[0] *= 0.7
                     new_vel[1] *= 0.7
 

@@ -11,7 +11,7 @@ class Bot:
         self.y = y
         self.energy = energy
         self.vel = vel
-        self.color = [1, 0, 0]
+        self.color = [255, 0, 0]
         self.radius = 10
         self.eat_food = 0
 
@@ -41,7 +41,7 @@ class Bot:
         #  print(res, data)
         return res
 
-    def turn(self, world,food,bots):
+    def turn(self, world, food, bots):
 
         mini_map = world[max(self.x - self.raycast_distans, 0): min(self.x + self.raycast_distans, len(world))]
         for x in range(len(mini_map)):
@@ -68,15 +68,14 @@ class Bot:
                 y = int(ray[1] * di + y_on_minimap)
                 # print(x,y)
                 if 0 <= x < len(mini_map) and 0 <= y < len(mini_map[0]):
+                    _a = 1 / di
                     if mini_map[x][y][0] == 1:
-                        _a = 1 / di
                         data[i * 3] = food[mini_map[x][y][1]].color[0] * _a
                         data[i * 3 + 1] = food[mini_map[x][y][1]].color[1] * _a
                         data[i * 3 + 2] = food[mini_map[x][y][1]].color[2] * _a
                         break
                     elif mini_map[x][y][0] == 3:
-                        _a = 1 / di
-                        data[i * 3 + 1] = 1 * _a
+                        data[i * 3 + 2] = 255 * _a
                         break
                 di += self.raycast_d
         return self._predict(data)
