@@ -1,82 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtWidgets
-from OpenGL import GL, GLU
-from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtGui import (QBrush, QColor, QFont, QPainter, QPen)
-from PyQt5.QtWidgets import QOpenGLWidget
+
 import Config as Config
-import Utils as utils
-
-class Helper(object):
-
-    def __init__(self):
-
-        self.background = QBrush(QColor(0, 0, 0))
-        self.botBrush = QBrush(QColor(255, 0, 0))
-        self.foodBrush = QBrush(QColor(0, 255, 0))
-        self.circlePen = QPen(Qt.black)
-        self.circlePen.setWidth(1)
-        self.textPen = QPen(Qt.white)
-        self.textFont = QFont()
-        self.textFont.setPixelSize(Config.fontSize)
-
-    def paint(self, painter, event, *args):
-        try:
-            painter.fillRect(event.rect(), self.background)
-            painter.translate(5, 5)
-
-            painter.save()
-
-            for i in range(len(args[0])):
-                if i <= len(args[0]):
-                    painter.setBrush(self.botBrush)
-                    painter.setPen(self.circlePen)
-                    painter.drawEllipse(args[0][i].x, args[0][i].y - args[0][i].radius / 2, args[0][i].radius,
-                                        args[0][i].radius)
-                    painter.setPen(self.textPen)
-                    painter.setFont(self.textFont)
-                    painter.drawText(QPoint(args[0][i].x - args[0][i].radius / 2, args[0][i].y - args[0][i].radius / 2),
-                                     str(args[0][i].id) + " | " + str(round(--args[0][i].energy)))
-
-            for i in range(len(args[1])):
-                if i <= len(args[1]):
-                    painter.setBrush(self.foodBrush)
-                    painter.drawEllipse(args[1][i].x + args[1][i].radius / 2, args[1][i].y + args[1][i].radius / 2,
-                                        args[1][i].radius, args[1][i].radius)
-
-            painter.restore()
-        except Exception as e:
-            print(utils.bordered("Error", "Message: {0}".format(e)))
-
-
-class GLWidget(QOpenGLWidget):
-
-    def __init__(self, helper, parent):
-        super(GLWidget, self).__init__(parent.splitter)
-        self.this = parent
-        self.helper = helper
-        self.elapsed = 0
-        self.setAutoFillBackground(True)
-        self.bots = []
-        self.food = []
-
-    def initializeGL(self):
-        GL.glClearColor(0, 0, 0, 0)
-        GL.glMatrixMode(GL.GL_PROJECTION)
-        GLU.gluOrtho2D(0, 0, 0, 0)
-
-    def _upgrade(self, *args):
-        self.bots = args[0]
-        self.food = args[1]
-        self.update()
-
-    def paintEvent(self, event):
-        painter = QPainter()
-        painter.begin(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        self.helper.paint(painter, event, self.bots, self.food)
-        painter.end()
+from Gui.OpenGLWidget import Helper, GLWidget
 
 
 class Ui_MainWindow(object):
@@ -91,8 +18,7 @@ class Ui_MainWindow(object):
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
 
-        helper = Helper()
-        self.openGLWidget = GLWidget(helper, self)
+        self.openGLWidget = GLWidget(Helper(self.environment), self)
         self.openGLWidget.setGeometry(QtCore.QRect(0, 0, Config.HEIGHT_MAP, Config.WIDTH_MAP))
         self.openGLWidget.setMinimumSize(Config.HEIGHT_MAP, Config.WIDTH_MAP)
         self.openGLWidget.setObjectName("openGLWidget")
@@ -131,17 +57,10 @@ class Ui_MainWindow(object):
         self.label_5 = QtWidgets.QLabel(self.gbSettings)
         self.label_5.setObjectName("label_5")
         self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.label_5)
-        self.labelDraw = QtWidgets.QLabel(self.gbSettings)
-        self.labelDraw.setObjectName("labelDraw")
-        self.formLayout.setWidget(5, QtWidgets.QFormLayout.LabelRole, self.labelDraw)
-        self.checkBox = QtWidgets.QCheckBox(self.gbSettings)
-        self.checkBox.setChecked(True)
-        self.checkBox.setObjectName("checkBox")
-        self.formLayout.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.checkBox)
         self.gbStatistic = QtWidgets.QGroupBox(self.gbSettings)
         self.gbStatistic.setMinimumSize(QtCore.QSize(0, 100))
         self.gbStatistic.setTitle("")
-        self.gbStatistic.setFlat(False)
+        self.gbStatistic.setFlat(True)
         self.gbStatistic.setObjectName("gbStatistic")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.gbStatistic)
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -195,12 +114,6 @@ class Ui_MainWindow(object):
         self.btnRun.setObjectName("btnRun")
         self.gridLayout_3.addWidget(self.btnRun, 0, 1, 1, 1)
         self.formLayout.setWidget(8, QtWidgets.QFormLayout.SpanningRole, self.gbRun)
-        self.label = QtWidgets.QLabel(self.gbSettings)
-        self.label.setObjectName("label")
-        self.formLayout.setWidget(6, QtWidgets.QFormLayout.LabelRole, self.label)
-        self.checkBox_2 = QtWidgets.QCheckBox(self.gbSettings)
-        self.checkBox_2.setObjectName("checkBox_2")
-        self.formLayout.setWidget(6, QtWidgets.QFormLayout.FieldRole, self.checkBox_2)
         self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.retranslateUi(MainWindow)
@@ -208,8 +121,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Главное меню"))
-        self.gbSettings.setTitle(_translate("MainWindow", "Настройки"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Live"))
+        self.gbSettings.setTitle(_translate("MainWindow", "Settings"))
         self.labelDump.setText(_translate("MainWindow", "Dump: "))
         self.label_7.setText(_translate("MainWindow", "Null"))
         self.label_8.setText(_translate("MainWindow", "Epoh:"))
@@ -218,10 +131,6 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "0"))
         self.labelFood.setText(_translate("MainWindow", "Food:                    "))
         self.label_5.setText(_translate("MainWindow", "0"))
-        self.labelDraw.setText(_translate("MainWindow", "Draw:"))
-        self.checkBox.setText(_translate("MainWindow", "(Y/N)"))
         self.btnRun.setText(_translate("MainWindow", "..."))
-        self.label.setText(_translate("MainWindow", "Update: "))
-        self.checkBox_2.setText(_translate("MainWindow", "(Y/N)"))
         self.tbScores.setSortingEnabled(True)
         self.tbScores.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)

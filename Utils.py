@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+
 def bordered(title, body):
     lines = body.splitlines()
     width = max(len(s) for s in lines)
