@@ -11,7 +11,7 @@ class Bot:
         self.y = y
         self.energy = energy
         self.vel = vel
-        self.color = [1, 1, 0]
+        self.color = [1, 0, 0]
         self.radius = 10
         self.eat_food = 0
 
@@ -21,7 +21,7 @@ class Bot:
         self.raycast_distans = 60  # Как далеко идет луч
 
         # Нейронка
-        self.l1 = 10  # Кол-во выходных нейронов первого слоя
+        self.l1 = 5  # Кол-во выходных нейронов первого слоя
         self.l2 = 3  # Кол-во выходных нейронов второго слоя
 
         self.W_1 = (np.random.random((self.eyes_count*3 + 1, self.l1)) - 0.5) * 5
@@ -73,6 +73,10 @@ class Bot:
                         data[i * 3] = food[mini_map[x][y][1]].color[0] * _a
                         data[i * 3 + 1] = food[mini_map[x][y][1]].color[1] * _a
                         data[i * 3 + 2] = food[mini_map[x][y][1]].color[2] * _a
+                        break
+                    elif mini_map[x][y][0] == 3:
+                        _a = 1 / di
+                        data[i * 3 + 1] = 1 * _a
                         break
                 di += self.raycast_d
         return self._predict(data)

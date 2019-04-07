@@ -34,6 +34,12 @@ class Environment:
         else:
             self.world = [[[0, None, None] for i in range(HEIGHT_MAP)] for j in
                           range(WIDTH_MAP)]  # Карта мира [x,y], все вещи имеют int координаты
+            for i in range(WIDTH_MAP):
+                self.world[i][0] = [3, None, None]
+                self.world[i][-1] = [3, None, None]
+            for i in range(HEIGHT_MAP):
+                self.world[0][i] = [3, None, None]
+                self.world[-1][i] = [3, None, None]
         # [0,None,None] - пустота
         # [1,Food_index,radius] - еда
         # [2,Bot_index,radius] - Бот
@@ -49,7 +55,7 @@ class Environment:
                     self.world[x][y] = [0, i, 8]
                     yield Bot(i, x, y, 1000, [0, 0])
 
-            self.bots = [bot for bot in generate_bot(20)]
+            self.bots = [bot for bot in generate_bot(30)]
         if food:
             self.food = food
         else:
@@ -120,13 +126,13 @@ class Environment:
     def _mutation(self, bot):
         rnd = random.randint(0, 3)
         if rnd == 0:
-            bot.W_1 += (np.random.random((bot.eyes_count + 1, bot.l1)) - 0.5) * 0.3
+            bot.W_1[random.randint(0, bot.eyes_count*3)][random.randint(0, bot.l1-1)] += random.uniform(-0.1, 0.1)
         elif rnd == 1:
-            bot.W_2 += (np.random.random((bot.l1, bot.l2)) - 0.5) * 0.3
+            bot.W_2[random.randint(0, bot.l1-1)][random.randint(0, bot.l2-1)] += random.uniform(-0.1, 0.1)
         elif rnd == 2:
-            bot.b_1 += (np.random.random(bot.l1) - 0.5) * 0.3
+            bot.b_1[random.randint(0, bot.l1-1)] += random.uniform(-0.1, 0.1)
         else:
-            bot.b_2 += (np.random.random(bot.l2) - 0.5) * 0.3
+            bot.b_2[random.randint(0, bot.l2-1)] += random.uniform(-0.1, 0.1)
 
     def _generate_bots(self, id_bot):
         a_bot = self.new_bot(self.bots[id_bot])
@@ -152,7 +158,7 @@ class Environment:
         b_bot.vel[1] *= -1
 
         rnd = random.randint(0, 99)
-        if rnd < 30:
+        if rnd < 70:
             if random.randint(0, 1) == 0:
                 self._mutation(a_bot)
             else:
@@ -185,7 +191,7 @@ class Environment:
                                      len(self.bots))))
 
             t = PrettyTable(['#', 'id', 'Score'])
-            new_bots = sorted(self.bots, key=lambda bot: bot.eat_food, reverse=True)
+            new_bots = sorted(self.bots, key=lambda bot: bot.energy, reverse=True)
 
             for i in range(len(new_bots)):
                 t.add_row([i, new_bots[i].id, new_bots[i].eat_food])
@@ -197,16 +203,26 @@ class Environment:
             new_bots = new_bots[:min(20, len(new_bots))]
             if len(new_bots) < 10:
                 new_bots += new_bots
+                print(len(new_bots))
+                if len(new_bots) == 0:
+                    def generate_bot(i):
+                        for i in range(i):
+                            x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
+                            while self.world[x][y][0] != 0:
+                                x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
+                            self.world[x][y] = [0, i, 8]
+                            yield Bot(i, x, y, 1000, [0, 0])
+                    new_bots += [i for i in generate_bot(15 - len(new_bots))]
             len_bots = len(new_bots)
             if len_bots > 0:
                 #  Получение новых ботов
-                a = new_bots[:int(len_bots * 0.4)]
+                a = new_bots[:int(len_bots * 0.8)]
                 random.shuffle(new_bots)
-                b_1 = new_bots[:int(len_bots * 0.3)]
+                b_1 = new_bots[:int(len_bots * 0.5)]
                 random.shuffle(new_bots)
-                b_2 = new_bots[:int(len_bots * 0.3)]
+                b_2 = new_bots[:int(len_bots * 0.5)]
                 random.shuffle(new_bots)
-                c = new_bots[:int(len_bots * 0.3)]
+                c = new_bots[:int(len_bots * 0.5)]
 
                 #  Скрещивание ботов
                 b = []
@@ -246,7 +262,8 @@ class Environment:
                             yield Bot(i, x, y, 1000, [0, 0])
 
                     new_bots += [i for i in generate_bot(15 - len(new_bots))]
-
+                for i in range(len(new_bots)):
+                    new_bots[i].energy = 900
                 self.bots = new_bots
 
                 self.save()
@@ -291,6 +308,13 @@ class Environment:
                 if y < 0:
                     y = 0
                     new_vel[1] = 0
+
+                if self.world[int(x)][int(y)][0] == 3:
+                    x = self.bots[i].x
+                    y = self.bots[i].y
+                    self.bots[i].energy -= (new_vel[0]**2 + new_vel[1] ** 2) * self.bots[i].energy//10000
+                    new_vel[0] *= 0.7
+                    new_vel[1] *= 0.7
 
                 self.bots[i].vel[0] = new_vel[0]
                 self.bots[i].vel[1] = new_vel[1]
