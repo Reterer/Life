@@ -9,8 +9,8 @@ Required packages:
  - math
  
 Arguments:
- -o "path" - Open Dump
- -train - Launch with train mode
+ - -o "path" - Open Dump
+ - -train - Launch with train mode
  
 Launch:
   py Main.py [arguments]
