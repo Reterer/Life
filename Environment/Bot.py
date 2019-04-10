@@ -11,7 +11,7 @@ class Bot:
         self.y = y
         self.energy = energy
         self.vel = vel
-        self.color = [1, 0, 0]
+        self.color = [255, 0, 0]
         self.radius = 10
         self.eat_food = 0
 
@@ -69,7 +69,7 @@ class Bot:
                 # print(x,y)
                 if 0 <= x < len(mini_map) and 0 <= y < len(mini_map[0]):
                     if mini_map[x][y][0] == 1:
-                        _a = 1 / di
+                        _a = 1 / (di * 255)
                         data[i * 3] = food[mini_map[x][y][1]].color[0] * _a
                         data[i * 3 + 1] = food[mini_map[x][y][1]].color[1] * _a
                         data[i * 3 + 2] = food[mini_map[x][y][1]].color[2] * _a
