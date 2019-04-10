@@ -15,4 +15,4 @@ Arguments:
 Launch:
   py Main.py [arguments]
   
-Check {https://vk.com/mr_reterer, https://vk.com/id164083684}
+Check { https://vk.com/mr_reterer , https://vk.com/id164083684 }
