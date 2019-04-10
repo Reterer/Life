@@ -15,6 +15,8 @@ from Environment.Food import Food
 class Environment:
     def __init__(self):
         # self._setup()
+        self.bots = []
+        self.crt_iter = 0
         self.last_save = time.time()
         pass
 
@@ -57,7 +59,7 @@ class Environment:
                     self.world[x][y] = [0, i, 8]
                     yield Bot(i, x, y, 1000, [0, 0])
 
-            self.bots = [bot for bot in generate_bot(30)]
+            self.bots = [bot for bot in generate_bot(20)]
         if food:
             self.food = food
         else:
@@ -194,10 +196,10 @@ class Environment:
                                      datetime.datetime.today().strftime("%m-%d-%Y %H-%M-%S"), self.epoch,
                                      len(self.bots))))
 
-            t = PrettyTable(['#', 'id', 'Score'])
+            t = PrettyTable(['#', 'id', 'Score'])  # Формируем таблицу
             new_bots = sorted(self.bots, key=lambda bot: bot.energy, reverse=True)
 
-            for i in range(len(new_bots)):
+            for i in range(len(new_bots)):  # Заполняем таблицу
                 t.add_row([i, new_bots[i].id, new_bots[i].eat_food])
             print(t)
 
@@ -207,15 +209,15 @@ class Environment:
             new_bots = new_bots[:min(20, len(new_bots))]
             if len(new_bots) < 10:
                 new_bots += new_bots
-                print(len(new_bots))
+                print("Generate bot size:", len(new_bots))
                 if len(new_bots) == 0:
                     def generate_bot(i):
-                        for i in range(i):
+                        for j in range(i):
                             x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
                             while self.world[x][y][0] != 0:
                                 x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
-                            self.world[x][y] = [0, i, 8]
-                            yield Bot(i, x, y, 1000, [0, 0])
+                            self.world[x][y] = [0, j, 8]
+                            yield Bot(j, x, y, 1000, [0, 0])
                     new_bots += [i for i in generate_bot(15 - len(new_bots))]
             len_bots = len(new_bots)
             if len_bots > 0:
@@ -258,12 +260,12 @@ class Environment:
 
                 if len(new_bots) < 10:
                     def generate_bot(i):
-                        for i in range(i):
-                            x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
-                            while self.world[x][y][0] != 0:
-                                x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
-                            self.world[x][y] = [0, i, 8]
-                            yield Bot(i, x, y, 1000, [0, 0])
+                        for j in range(i):
+                            _x, _y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
+                            while self.world[_x][_y][0] != 0:
+                                _x, _y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
+                            self.world[_x][_y] = [0, i, 8]
+                            yield Bot(j, _x, _y, 1000, [0, 0])
 
                     new_bots += [i for i in generate_bot(15 - len(new_bots))]
                 for i in range(len(new_bots)):
@@ -281,7 +283,7 @@ class Environment:
                 self._die_bot(i)
                 continue
 
-            dx, dy, duplicate = self.bots[i].turn(self.world,self.food,self.bots)
+            dx, dy, duplicate = self.bots[i].turn(self.world, self.food, self.bots)
             if duplicate == 1:
                 bot_a, bot_b = self._generate_bots(i)
                 self.bots[i] = bot_a

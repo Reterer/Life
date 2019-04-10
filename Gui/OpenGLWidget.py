@@ -4,7 +4,6 @@ from OpenGL import GL, GLU
 from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import (QBrush, QColor, QFont, QPainter, QPen)
 from PyQt5.QtWidgets import QOpenGLWidget
-
 import Config as Config
 import Utils as utils
 
@@ -24,8 +23,8 @@ class Helper(object):
 
     def paint(self, painter, event):
         try:
-            painter.fillRect(event.rect(), self.background)
-            painter.save()
+            painter.fillRect(event.rect(), self.background)  # Очищаем и красим фон
+
             for i in range(len(self.env.bots)):
                 painter.setBrush(
                     QBrush(QColor(self.env.bots[i].color[0], self.env.bots[i].color[1], self.env.bots[i].color[2])))
@@ -46,16 +45,16 @@ class Helper(object):
                 painter.drawEllipse(self.env.food[i].x + self.env.food[i].radius / 2,
                                     self.env.food[i].y + self.env.food[i].radius / 2,
                                     self.env.food[i].radius, self.env.food[i].radius)
-            painter.restore()
+
         except Exception as e:
             print(utils.bordered("Error-Draw", " Message: {0}".format(e)))
 
 
 class GLWidget(QOpenGLWidget):
 
-    def __init__(self, helper, parent):
+    def __init__(self, parent):
         super(GLWidget, self).__init__(parent.splitter)
-        self.helper = helper
+        self.helper = Helper(parent.environment)
         self.setAutoFillBackground(True)
 
     def initializeGL(self):

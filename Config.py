@@ -3,16 +3,10 @@
 HEIGHT_MAP = 800  # Высота карты
 WIDTH_MAP = 800  # Ширина карты
 
-HEIGHT = 500
-WIDTH = 1285
-
-DELTA_TIME = 0.3
-ENABLE_GUI = False
-DRAW = True
-
-AUTO_SAVE_INTERVAL = 2 * 60
+DELTA_TIME = 0.5
+AUTO_SAVE_INTERVAL = 2 * 60  # Время для авто-сохранения в сек.
 ITER_FOR_EPOCH = 500
 
 F_tr = 0.25
 
-FONT_SIZE = 10
+FONT_SIZE = 10  # Размер кегли в информации на экране

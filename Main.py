@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from threading import Thread
-
 import qdarkgraystyle
 from OpenGL.GLUT import *
 from PyQt5 import QtWidgets
-
 from Environment.Environment import *
 from Gui import design
 
@@ -16,7 +14,8 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
         super().__init__()
         self.environment = Environment()  # Инициализирую среду
 
-        if path != "null":
+        if path != "null" and os.path.isfile(path):
+
             f = open(path, 'rb')
             self.environment = pickle.load(f)
             print(utils.bordered("Information",
@@ -39,18 +38,18 @@ class Apps(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.label_7.setText(path)
 
     def __update(self):
-        i = 0
+        counter = 0
         while True:
             try:
-                self.environment.update()  # Обновляем среду
-                if i == 3:
-                    self.openGLWidget.update()  # Обновляем экран
-                    time.sleep(0.001)
-                    i = 0
-
-                i += 1
+                self.environment.update()
                 self.label_9.setText(str(self.environment.epoch))  # Обновляем кол-во эпох
                 self.label_3.setText(str(len(self.environment.bots)))  # Обновляем кол-во ботов
+
+                if counter == 5:
+                    self.openGLWidget.update()  # Обновляем экран
+                    time.sleep(0.001)
+                    counter = 0
+                counter += 1
             except Exception as e:
                 print(utils.bordered("Error", "Message: {0}".format(e)))
                 traceback.print_exc()
@@ -72,7 +71,7 @@ def main():
                                                                                                    mode)))
         if mode == "train":
             environment = Environment()
-            if path != "null":
+            if path != "null" and os.path.isfile(path):
                 f = open(path, 'rb')
                 environment = pickle.load(f)
                 print(utils.bordered("Information",
