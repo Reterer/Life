@@ -11,6 +11,8 @@ from Config import *
 from Environment.Bot import Bot
 from Environment.Food import Food
 
+STANDART_RADUIS_BOT = 3
+
 class Environment:
     def __init__(self):
         self.last_save = time.time()
@@ -26,7 +28,7 @@ class Environment:
             x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
             while self.world[x][y][0] != 0:
                 x, y = random.randint(0, WIDTH_MAP - 1), random.randint(0, HEIGHT_MAP - 1)
-            self.world[x][y] = [0, i, 8]
+            self.world[x][y] = [0, i, STANDART_RADUIS_BOT]
             yield Bot(i, x, y, 1000, [0, 0])
 
     def generate_food(self, i):
@@ -321,6 +323,8 @@ class Environment:
 
                 self.bots[i].vel[0] = new_vel[0]
                 self.bots[i].vel[1] = new_vel[1]
+
+                self.bots[i].radius = STANDART_RADUIS_BOT + int(self.bots[i].energy // 100)
 
                 self.world[self.bots[i].x][self.bots[i].y] = [0, None, None]
                 self.bots[i].x = int(x)

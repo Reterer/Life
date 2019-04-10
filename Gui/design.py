@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
 
-        self.openGLWidget = GLWidget(Helper(self.environment), self)
+        self.openGLWidget = GLWidget(self)
         self.openGLWidget.setGeometry(QtCore.QRect(0, 0, Config.HEIGHT_MAP, Config.WIDTH_MAP))
         self.openGLWidget.setMinimumSize(Config.HEIGHT_MAP, Config.WIDTH_MAP)
         self.openGLWidget.setObjectName("openGLWidget")
