@@ -1,3 +1,7 @@
+.gitignore
 .idea
+Config.py
+# Папки
 dumps
 .vs
+__pycache__/

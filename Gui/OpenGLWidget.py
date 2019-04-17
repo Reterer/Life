@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from OpenGL import GL, GLU
-from PyQt5.QtCore import Qt, QPoint, QRect
+from PyQt5.QtCore import QPoint, QRect, Qt
 from PyQt5.QtGui import (QBrush, QColor, QFont, QPainter, QPen)
-from PyQt5.QtWidgets import QOpenGLWidget
+from PyQt5.QtWidgets import QOpenGLWidget, QSizePolicy, QWidget, QVBoxLayout
+from matplotlib.backends.backend_qt5agg import (
+    FigureCanvasQTAgg as FigureCanvas,
+    NavigationToolbar2QT as NavigationToolbar)
 import Config as Config
 import Utils as utils
+import matplotlib.pyplot as plt
 
 
 class Helper(object):
@@ -67,3 +71,42 @@ class GLWidget(QOpenGLWidget):
         painter.setRenderHint(QPainter.Antialiasing, True)
         self.helper.paint(painter, event)
         painter.end()
+
+
+class MplCanvas(FigureCanvas):
+
+    def __init__(self):
+        plt.style.use(['dark_background'])
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot(111)
+        FigureCanvas.__init__(self, self.fig)
+        FigureCanvas.setSizePolicy(self,
+                                   QSizePolicy.Expanding,
+                                   QSizePolicy.Expanding)
+
+        FigureCanvas.updateGeometry(self)
+
+    def plot(self, data):
+
+        ax = self.fig
+        ax.patch.set_facecolor('#323232')
+        xx = ax.add_subplot(111)
+        xx.patch.set_facecolor('#323232')
+        xx.plot(data, 'o-')
+        xx.margins(y=.1)
+        xx.set_title('')
+        plt.grid(True)
+        plt.ion()
+        plt.draw()
+
+
+class MplWidgetTest(QWidget):
+
+    def __init__(self, parent = None):
+        QWidget.__init__(self, parent)
+        self.canvas = MplCanvas()
+        self.ntb = NavigationToolbar(self.canvas, self)
+        self.vbl = QVBoxLayout()
+        self.vbl.addWidget(self.canvas)
+        self.vbl.addWidget(self.ntb)
+        self.setLayout(self.vbl)
